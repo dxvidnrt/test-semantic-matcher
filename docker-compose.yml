@@ -25,6 +25,12 @@ services:
     networks:
       - semantic_network
 
+  test-semantic-matcher:
+    build:
+      context: ../test-semantic-matcher
+    networks:
+      - semantic_network
+
 networks:
   semantic_network:
     driver: bridge

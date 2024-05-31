@@ -1,5 +1,5 @@
 import requests
-from semantic_matcher import model, service_model
+from semantic_matcher import service_model, model
 import graph_representation
 import configparser
 
@@ -7,11 +7,11 @@ config = configparser.ConfigParser()
 
 config.read('config.ini.default')
 
-sms1_address_post = f"{config['SERVICE']['endpoint']}:{config['PORTS'].getint('sms1')}/{config['URLS']['url_post']}"
-sms1_address_get = f"{config['SERVICE']['endpoint']}:{config['PORTS'].getint('sms1')}/{config['URLS']['url_get']}"
+sms1_address_post = f"{config['SERVICE']['endpoint']}:{config['PORTS'].getint('sms1')}/{config['SMS']['url_post']}"
+sms1_address_get = f"{config['SERVICE']['endpoint']}:{config['PORTS'].getint('sms1')}/{config['SMS']['url_get']}"
 
-sms2_address_post = f"{config['SERVICE']['endpoint']}:{config['PORTS'].getint('sms2')}/{config['URLS']['url_post']}"
-sms2_address_get = f"{config['SERVICE']['endpoint']}:{config['PORTS'].getint('sms2')}/{config['URLS']['url_get']}"
+sms2_address_post = f"{config['SERVICE']['endpoint']}:{config['PORTS'].getint('sms2')}/{config['SMS']['url_post']}"
+sms2_address_get = f"{config['SERVICE']['endpoint']}:{config['PORTS'].getint('sms2')}/{config['SMS']['url_get']}"
 
 
 def example_match_request() -> dict:
@@ -62,6 +62,24 @@ def example_match_post() -> dict:
     matches_list = service_model.MatchesList(matches=[match1, match2, match3, match4]).dict()
     return matches_list
 
+def basic_test():
+    url_get = "http://127.0.0.1:8000/get_matches"
+    url_post = "http://127.0.0.1:8000/post_matches"
+    url_get_all = "http://127.0.0.1:8000/all_matches"
+
+    response = requests.get(url_get_all)
+    # print(response.text)
+    response = requests.get(url_get, json=example_match_request())
+    # print(f"Request before adding: {response.text}")
+    response = requests.post(url_post, json=example_match_post())
+    # print(f"Added: {example_match_post()}")
+    response = requests.get(url_get_all)
+    graph_representation.show_sms(response.json())
+    # print(response.text)
+    response = requests.get(url_get, json=example_match_request())
+    print(f"Request after adding: {response.text}")
+
+
 def test_multiple_sms():
     match_sms_1 = model.SemanticMatch(
         base_semantic_id='s-heppner.com/semanticID/seb_1',
@@ -69,27 +87,23 @@ def test_multiple_sms():
         score=0.8,
         meta_information={'matchSource': 'Defined by David Niebert'}
     )
+    print(f"Calling requests.post for{sms1_address_post}")
     response = requests.post(sms1_address_post, match_sms_1.dict())
+    print(f"Post seb_1, dav_1): {response.text}")
 
+    req_sms_1 = service_model.MatchRequest(
+        semantic_id='s-heppner.com/semanticID/seb_1',
+        score_limit=0.3,
+        local_only=False,
+        name="test_remote",
+        definition="test_remote"
+    )
+    response = requests.get(sms1_address_get, req_sms_1.dict())
+    print(f"Get seb_1, dav_1: {response.text}")
 
 
 def main():
-
-    url_get = "http://127.0.0.1:8000/get_matches"
-    url_post = "http://127.0.0.1:8000/post_matches"
-    url_get_all = "http://127.0.0.1:8000/all_matches"
-
-    response = requests.get(url_get_all)
-    #print(response.text)
-    response = requests.get(url_get, json=example_match_request())
-    #print(f"Request before adding: {response.text}")
-    response = requests.post(url_post, json=example_match_post())
-    #print(f"Added: {example_match_post()}")
-    response = requests.get(url_get_all)
-    graph_representation.show_sms(response.json())
-    #print(response.text)
-    response = requests.get(url_get, json=example_match_request())
-    print(f"Request after adding: {response.text}")
+    test_multiple_sms()
 
 
 if __name__ == "__main__":
