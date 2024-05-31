@@ -9,6 +9,22 @@ services:
     networks:
       - semantic_network
 
+  python-semantic-matcher_1:
+    build:
+      context: ../python-semantic-matcher
+    ports:
+      - "8000:8000"
+    networks:
+      - semantic_network
+
+  python-semantic-matcher_2:
+    build:
+      context: ../python-semantic-matcher
+    ports:
+      - "8001:8000"
+    networks:
+      - semantic_network
+
 networks:
   semantic_network:
     driver: bridge
