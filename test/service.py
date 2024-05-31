@@ -87,8 +87,8 @@ def test_multiple_sms():
         score=0.8,
         meta_information={'matchSource': 'Defined by David Niebert'}
     )
-    print(f"Calling requests.post for{sms1_address_post}")
-    response = requests.post(sms1_address_post, match_sms_1.dict())
+    matches_list = service_model.MatchesList(matches=[match_sms_1]).dict()
+    response = requests.post(sms1_address_post, json=matches_list)
     print(f"Post seb_1, dav_1): {response.text}")
 
     req_sms_1 = service_model.MatchRequest(
