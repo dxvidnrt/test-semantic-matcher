@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  semantic_id_resolver:
+    build:
+      context: ../semantic_id_resolver
+    ports:
+      - "8125:8125"
+    networks:
+      - semantic_network
+
+networks:
+  semantic_network:
+    driver: bridge
