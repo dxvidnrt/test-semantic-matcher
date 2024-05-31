@@ -1,6 +1,18 @@
 import requests
 from semantic_matcher import model, service_model
-import GraphRepresentation
+import graph_representation
+import configparser
+
+config = configparser.ConfigParser()
+
+config.read('config.ini.default')
+
+sms1_address_post = f"{config['SERVICE']['endpoint']}:{config['PORTS'].getint('sms1')}/{config['URLS']['url_post']}"
+sms1_address_get = f"{config['SERVICE']['endpoint']}:{config['PORTS'].getint('sms1')}/{config['URLS']['url_get']}"
+
+sms2_address_post = f"{config['SERVICE']['endpoint']}:{config['PORTS'].getint('sms2')}/{config['URLS']['url_post']}"
+sms2_address_get = f"{config['SERVICE']['endpoint']}:{config['PORTS'].getint('sms2')}/{config['URLS']['url_get']}"
+
 
 def example_match_request() -> dict:
 
@@ -50,6 +62,16 @@ def example_match_post() -> dict:
     matches_list = service_model.MatchesList(matches=[match1, match2, match3, match4]).dict()
     return matches_list
 
+def test_multiple_sms():
+    match_sms_1 = model.SemanticMatch(
+        base_semantic_id='s-heppner.com/semanticID/seb_1',
+        match_semantic_id='dxvidnrt.com/semanticID/dav_1',
+        score=0.8,
+        meta_information={'matchSource': 'Defined by David Niebert'}
+    )
+    response = requests.post(sms1_address_post, match_sms_1.dict())
+
+
 
 def main():
 
@@ -64,7 +86,7 @@ def main():
     response = requests.post(url_post, json=example_match_post())
     #print(f"Added: {example_match_post()}")
     response = requests.get(url_get_all)
-    GraphRepresentation.show_sms(response.json())
+    graph_representation.show_sms(response.json())
     #print(response.text)
     response = requests.get(url_get, json=example_match_request())
     print(f"Request after adding: {response.text}")
