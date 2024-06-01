@@ -102,7 +102,7 @@ def test_multiple_sms():
         name="test_remote",
         definition="test_remote"
     )
-    response = requests.get(sms1_address_get, req_sms_1.dict())
+    response = requests.get(sms1_address_get, json=req_sms_1.dict())
     print(f"Get seb_1, dav_1: {response.text}")
 
 
