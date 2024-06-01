@@ -13,7 +13,6 @@ url_get=get_matches
 url_post=post_matches
 url_get_all=all_matches
 
-[PORTS]
-sms1=8000
-sms2=8001
-resolver=8125
+[ENDPOINTS]
+sms1=http://python-semantic-matcher_1:8000
+sms2=http://python-semantic-matcher_2:8000

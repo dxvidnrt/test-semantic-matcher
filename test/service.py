@@ -2,16 +2,18 @@ import requests
 from semantic_matcher import service_model, model
 import graph_representation
 import configparser
+from typing import List
+import time
 
 config = configparser.ConfigParser()
 
 config.read('config.ini.default')
 
-sms1_address_post = f"{config['SERVICE']['endpoint']}:{config['PORTS'].getint('sms1')}/{config['SMS']['url_post']}"
-sms1_address_get = f"{config['SERVICE']['endpoint']}:{config['PORTS'].getint('sms1')}/{config['SMS']['url_get']}"
+sms1_address_post = f"{config['ENDPOINTS']['sms1']}/{config['SMS']['url_post']}"
+sms1_address_get = f"{config['ENDPOINTS']['sms1']}/{config['SMS']['url_get']}"
 
-sms2_address_post = f"{config['SERVICE']['endpoint']}:{config['PORTS'].getint('sms2')}/{config['SMS']['url_post']}"
-sms2_address_get = f"{config['SERVICE']['endpoint']}:{config['PORTS'].getint('sms2')}/{config['SMS']['url_get']}"
+sms2_address_post = f"{config['ENDPOINTS']['sms2']}/{config['SMS']['url_post']}"
+sms2_address_get = f"{config['ENDPOINTS']['sms2']}/{config['SMS']['url_get']}"
 
 
 def example_match_request() -> dict:
@@ -88,7 +90,9 @@ def test_multiple_sms():
         meta_information={'matchSource': 'Defined by David Niebert'}
     )
     matches_list = service_model.MatchesList(matches=[match_sms_1]).dict()
+    print(f"Call {sms1_address_post} with json: {matches_list}")
     response = requests.post(sms1_address_post, json=matches_list)
+    print("Return:")
     print(f"Post seb_1, dav_1): {response.text}")
 
     req_sms_1 = service_model.MatchRequest(
@@ -102,7 +106,32 @@ def test_multiple_sms():
     print(f"Get seb_1, dav_1: {response.text}")
 
 
+def wait_server():
+    tries = 0
+    max_tries = 10
+    if 'ENDPOINTS' in config:
+        semantic_server_list = list(config['ENDPOINTS'].items())
+        while len(semantic_server_list) != 0:
+            if tries > max_tries:
+                raise ConnectionError("Exceeded max tries to connect")
+            tries += 1
+            for name, url in semantic_server_list:
+                try:
+                    print(f"Connecting to {url}")
+                    response = requests.get(url)
+                    print(response.text)
+                    if response.status_code == 200:
+                        semantic_server_list.remove((name, url))
+                except requests.exceptions.RequestException as e:
+                    print(f"Error connecting to {url}: {e}")
+            time.sleep(1)
+    else:
+        raise ConnectionError("No Endpoints found")
+
+
 def main():
+    print("Starting...")
+    wait_server()
     test_multiple_sms()
 
 
