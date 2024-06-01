@@ -90,10 +90,18 @@ def test_multiple_sms():
         meta_information={'matchSource': 'Defined by David Niebert'}
     )
     matches_list = service_model.MatchesList(matches=[match_sms_1]).dict()
-    print(f"Call {sms1_address_post} with json: {matches_list}")
     response = requests.post(sms1_address_post, json=matches_list)
-    print("Return:")
-    print(f"Post seb_1, dav_1): {response.text}")
+    print(f"Post to SMS1 {response.text}")
+
+    match_sms_2 = model.SemanticMatch(
+        base_semantic_id='dxvidnrt.com/semanticID/dav_1',
+        match_semantic_id='dxvidnrt.com/semanticID/dav_2',
+        score=0.5,
+        meta_information={'matchSource': 'Defined by David Niebert'}
+    )
+    matches_list = service_model.MatchesList(matches=[match_sms_2]).dict()
+    response = requests.post(sms2_address_post, json=matches_list)
+    print(f"Post to SMS2 {response.text}")
 
     req_sms_1 = service_model.MatchRequest(
         semantic_id='s-heppner.com/semanticID/seb_1',
@@ -103,7 +111,7 @@ def test_multiple_sms():
         definition="test_remote"
     )
     response = requests.get(sms1_address_get, json=req_sms_1.dict())
-    print(f"Get seb_1, dav_1: {response.text}")
+    print(f"Matches for {req_sms_1.semantic_id}: {response.text}")
 
 
 def wait_server():
@@ -117,9 +125,7 @@ def wait_server():
             tries += 1
             for name, url in semantic_server_list:
                 try:
-                    print(f"Connecting to {url}")
                     response = requests.get(url)
-                    print(response.text)
                     if response.status_code == 200:
                         semantic_server_list.remove((name, url))
                 except requests.exceptions.RequestException as e:
