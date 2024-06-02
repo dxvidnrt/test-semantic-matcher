@@ -84,6 +84,20 @@ def basic_test():
     print(f"Request after adding: {response.text}")
 
 
+def save_as_json(file_path: str, response):
+    try:
+        # Parse the response content as JSON
+        data = response.json()
+
+        # Write the JSON data to the file
+        with open(file_path, 'w') as f:
+            json.dump(data, f, indent=4)  # indent=4 for pretty-printing
+
+        print(f"Data saved to {file_path}")
+    except ValueError:
+        print("Response content is not valid JSON")
+
+
 def test_multiple_sms():
     match_sms_1 = model.SemanticMatch(
         base_semantic_id='s-heppner.com/semanticID/seb_1',
@@ -115,23 +129,38 @@ def test_multiple_sms():
     response = requests.get(sms1_address_get, json=req_sms_1.dict())
 
     if response.status_code == 200:
-        try:
-            # Parse the response content as JSON
-            data = response.json()
+        file_path = 'data/response.json'
 
-            # Define the path for the output file
-            file_path = 'data/response.json'
-
-            # Write the JSON data to the file
-            with open(file_path, 'w') as f:
-                json.dump(data, f, indent=4)  # indent=4 for pretty-printing
-
-            print(f"Data saved to {file_path}")
-        except ValueError:
-            print("Response content is not valid JSON")
+        save_as_json(file_path, response)
     else:
         print(f"Request failed with status code {response.status_code}")
         print("Response text:", response.text)
+
+
+def get_all_sms():
+    """
+    Get all SMS stored in config and save graph as json in data folder.
+    """
+    print(("Start get_all_sms"))
+    for endpoint_name, endpoint_url in config['ENDPOINTS'].items():
+        print(f"SMS: {endpoint_name}")
+        page = config['SMS']['url_get_all']
+        url = f"{endpoint_url}/{page}"
+        print(f"URL: {url}")
+        response = requests.get(url)
+        if response.status_code == 200:
+            print("200")
+            if not endpoint_url.startswith("http://"):
+                raise ValueError(f"Endpoint has wrong format: {endpoint_url}")
+            endpoint_url = endpoint_url[len("http://"):]
+            if not endpoint_url.endswith(":8000"):
+                raise ValueError(f"Endpoint has wrong format: {endpoint_url}")
+            name = endpoint_url[:-len(":8000")]
+
+            file_path = f'data/SMS/{name}.json'
+
+            save_as_json(file_path, response)
+
 
 
 def wait_server():
@@ -157,9 +186,11 @@ def wait_server():
 
 def main():
     os.makedirs('./data', exist_ok=True)
+    os.makedirs('./data/SMS', exist_ok=True)
     print("Starting...")
     wait_server()
     test_multiple_sms()
+    # get_all_sms()
 
 
 if __name__ == "__main__":
