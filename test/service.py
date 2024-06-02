@@ -4,6 +4,8 @@ import graph_representation
 import configparser
 from typing import List
 import time
+import os
+import json
 
 config = configparser.ConfigParser()
 
@@ -91,7 +93,7 @@ def test_multiple_sms():
     )
     matches_list = service_model.MatchesList(matches=[match_sms_1]).dict()
     response = requests.post(sms1_address_post, json=matches_list)
-    print(f"Post to SMS1 {response.text}")
+    print(f"Post to SMS1 {response.status_code}")
 
     match_sms_2 = model.SemanticMatch(
         base_semantic_id='dxvidnrt.com/semanticID/dav_1',
@@ -101,7 +103,7 @@ def test_multiple_sms():
     )
     matches_list = service_model.MatchesList(matches=[match_sms_2]).dict()
     response = requests.post(sms2_address_post, json=matches_list)
-    print(f"Post to SMS2 {response.text}")
+    print(f"Post to SMS2 {response.status_code}")
 
     req_sms_1 = service_model.MatchRequest(
         semantic_id='s-heppner.com/semanticID/seb_1',
@@ -111,7 +113,25 @@ def test_multiple_sms():
         definition="test_remote"
     )
     response = requests.get(sms1_address_get, json=req_sms_1.dict())
-    print(f"Matches for {req_sms_1.semantic_id}: {response.text}")
+
+    if response.status_code == 200:
+        try:
+            # Parse the response content as JSON
+            data = response.json()
+
+            # Define the path for the output file
+            file_path = 'data/response.json'
+
+            # Write the JSON data to the file
+            with open(file_path, 'w') as f:
+                json.dump(data, f, indent=4)  # indent=4 for pretty-printing
+
+            print(f"Data saved to {file_path}")
+        except ValueError:
+            print("Response content is not valid JSON")
+    else:
+        print(f"Request failed with status code {response.status_code}")
+        print("Response text:", response.text)
 
 
 def wait_server():
@@ -136,6 +156,7 @@ def wait_server():
 
 
 def main():
+    os.makedirs('./data', exist_ok=True)
     print("Starting...")
     wait_server()
     test_multiple_sms()

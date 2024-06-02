@@ -30,7 +30,8 @@ services:
       context: ../test-semantic-matcher
     networks:
       - semantic_network
-
+    volumes:
+      - ./data:/app/data
 networks:
   semantic_network:
     driver: bridge
