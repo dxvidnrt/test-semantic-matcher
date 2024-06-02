@@ -3,6 +3,8 @@ endpoint=http://127.0.0.1
 port=8100
 
 [RESOLVER]
+endpoint=http://semantic_id_resolver
+port=8125
 fallback_semantic_matching_service=https://example.org/semantic_matching_service
 eclass_semantic_matching_service=https://example.org/semantic_matching_service
 cdd_semantic_matching_service=https://example.org/semantic_matching_service

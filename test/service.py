@@ -8,6 +8,7 @@ import os
 from fastapi import APIRouter, FastAPI, File, HTTPException
 import uvicorn
 from fastapi.responses import FileResponse
+from resolver_modules import service as resolver_service
 
 
 def running_in_docker():
@@ -17,13 +18,14 @@ def running_in_docker():
 if running_in_docker():
     config_path = './config.ini.default'  # Use relative path within Docker container
     data_path = './data'
-    data_SMS_path = './data/SMS'
-    image_path = './data/images'
+
 else:
     config_path = '../config.ini.default'  # Use relative path when running on its own
     data_path = '../data'
-    data_SMS_path = '../data/SMS'
-    image_path = '../data/images'
+
+data_SMS_path = f'{data_path}/SMS'
+data_image_path = f'{data_path}/images'
+test_graphs_path = f'{data_path}/test_graphs'
 
 
 config = configparser.ConfigParser()
@@ -42,47 +44,37 @@ class TestService:
             self,
             endpoint: str,
             data_SMS_path: str,
-            graph_image_path: str
+            data_image_path: str
     ):
         self.router = APIRouter()
 
         self.router.add_api_route(
             "/",
-            self.read_root,
-            methods=["GET"]
-        )
-        self.router.add_api_route(
-            "/graph",
             self.represent_graph,
             methods=["GET"]
         )
+
         self.endpoint: str = endpoint
         self.data_SMS_path = data_SMS_path
-        self.graph_image_path = graph_image_path
-
-    def read_root(self):
-        return {"message": "Hello, World!"}
+        self.data_image_path = data_image_path
 
     def represent_graph(self):
-        graph_representation.show_graph(self.data_SMS_path, self.graph_image_path)
-        return FileResponse("/data/images/graph.png")
+        graph_representation.show_graph(self.data_SMS_path, self.data_image_path)
+        return FileResponse(f"{data_image_path}/graph.png")
 
 
 def example_match_request() -> dict:
-
-    example_match_request = service_model.MatchRequest(
+    example_request = service_model.MatchRequest(
         semantic_id="dxvidnrt.com/semanticID/myOne",
         score_limit=0.3,
         local_only=True,
         name="example_name",
         definition="example_definition"
     )
-    return example_match_request.dict()
+    return example_request.dict()
 
 
 def example_match_post() -> dict:
-
-
     match1 = model.SemanticMatch(
         base_semantic_id='dxvidnrt.com/semanticID/myOne',
         match_semantic_id='dxvidnrt.com/semanticID/my1',
@@ -234,29 +226,74 @@ def wait_server():
         raise ConnectionError("No Endpoints found")
 
 
+def post_graphs(file_path):
+    print(f"Filepath: {file_path}")
+    if os.path.exists(file_path):
+        with open(file_path, 'r') as file:
+            data = json.load(file)
+            matches_lists = {}
+
+            for base_semantic_id, matches_data in data.items():
+                matches = []
+                for match_data in matches_data:
+                    match = model.SemanticMatch(
+                        base_semantic_id=match_data['base_semantic_id'],
+                        match_semantic_id=match_data['match_semantic_id'],
+                        score=match_data['score'],
+                        meta_information=match_data['meta_information']
+                    )
+                    matches.append(match)
+                if base_semantic_id not in matches_lists:
+                    matches_lists[base_semantic_id] = service_model.MatchesList(matches=[])
+                stored_matches = matches_lists[base_semantic_id].matches
+                print(f"Stored_matches: {stored_matches}")
+                stored_matches.extend(matches)
+                print(f"Matches: {matches_lists}")
+                matches_lists[base_semantic_id] = service_model.MatchesList(matches=stored_matches)
+
+        print(f"Matches lists: {matches_lists}")
+        for base_semantic_id, matches_list in matches_lists.items():
+            request_body = resolver_service.SMSRequest(semantic_id=base_semantic_id)
+            endpoint = config['RESOLVER']['endpoint']
+            port = config['RESOLVER'].getint('port')
+            url = f"{endpoint}:{port}/get_semantic_matching_service"
+            response = requests.get(url, json=request_body.dict())
+
+            # Check if the response is successful (status code 200)
+            if response.status_code == 200:
+                # Parse the JSON response and construct SMSResponse object
+                response_json = response.json()
+                semantic_matching_service_endpoint = response_json['semantic_matching_service_endpoint']
+                url = f"{semantic_matching_service_endpoint}/post_matches"
+                response = requests.post(url, json=matches_list.dict())
+                print(f"Response: {response.status_code}")
+
+    else:
+        print(f"File '{file_path}' does not exist.")
+
+# TODO Save graph tests as json in a folder
+
+
 def main():
-    os.makedirs('./data', exist_ok=True)
-    os.makedirs('./data/SMS', exist_ok=True)
-    os.makedirs('./data/images', exist_ok=True)
-    # TODO Change all file_paths to differentiate between Docker and no Docker
-    print("Created images")
-    """   
+    os.makedirs(data_path, exist_ok=True)
+    os.makedirs(data_SMS_path, exist_ok=True)
+    os.makedirs(data_image_path, exist_ok=True)
     print("Starting...")
     wait_server()
     test_multiple_sms()
-    # get_all_sms()
+    get_all_sms()
+    post_graphs(f'{test_graphs_path}/test_graph.json')
 
-    graph_representation.show_graph(data_path, image_path)
-    """
     TEST_SERVICE = TestService(
         endpoint=config['SERVICE']['endpoint'],
-        data_path=data_SMS_path,
-        graph_image_path=image_path
+        data_SMS_path=data_SMS_path,
+        data_image_path=data_image_path
     )
     APP = FastAPI()
     APP.include_router(
         TEST_SERVICE.router
     )
+    TEST_SERVICE.represent_graph()
     print(f"Starting server on host 0.0.0.0 and port {int(config['SERVICE']['PORT'])}")
     uvicorn.run(APP, host="0.0.0.0", port=int(config["SERVICE"]["PORT"]))
 

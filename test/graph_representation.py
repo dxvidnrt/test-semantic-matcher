@@ -51,6 +51,7 @@ def show_graph(directory, image_path):
     plt.axis("off")
 
     plt.savefig(f'{image_path}/graph.png')
+    print(f"Saved graph to {image_path}/graph.png")
 
     plt.show()
 
