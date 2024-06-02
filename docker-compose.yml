@@ -28,6 +28,8 @@ services:
   test-semantic-matcher:
     build:
       context: ../test-semantic-matcher
+    ports:
+      - "8100:8100"
     networks:
       - semantic_network
     volumes:

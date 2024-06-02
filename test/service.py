@@ -2,20 +2,70 @@ import requests
 from semantic_matcher import service_model, model
 import graph_representation
 import configparser
-from typing import List
 import time
-import os
 import json
+import os
+from fastapi import APIRouter, FastAPI, File, HTTPException
+import uvicorn
+from fastapi.responses import FileResponse
+
+
+def running_in_docker():
+    return os.path.exists('/.dockerenv')
+
+
+if running_in_docker():
+    config_path = './config.ini.default'  # Use relative path within Docker container
+    data_path = './data'
+    data_SMS_path = './data/SMS'
+    image_path = './data/images'
+else:
+    config_path = '../config.ini.default'  # Use relative path when running on its own
+    data_path = '../data'
+    data_SMS_path = '../data/SMS'
+    image_path = '../data/images'
+
 
 config = configparser.ConfigParser()
 
-config.read('config.ini.default')
+config.read(config_path)
 
 sms1_address_post = f"{config['ENDPOINTS']['sms1']}/{config['SMS']['url_post']}"
 sms1_address_get = f"{config['ENDPOINTS']['sms1']}/{config['SMS']['url_get']}"
 
 sms2_address_post = f"{config['ENDPOINTS']['sms2']}/{config['SMS']['url_post']}"
 sms2_address_get = f"{config['ENDPOINTS']['sms2']}/{config['SMS']['url_get']}"
+
+
+class TestService:
+    def __init__(
+            self,
+            endpoint: str,
+            data_SMS_path: str,
+            graph_image_path: str
+    ):
+        self.router = APIRouter()
+
+        self.router.add_api_route(
+            "/",
+            self.read_root,
+            methods=["GET"]
+        )
+        self.router.add_api_route(
+            "/graph",
+            self.represent_graph,
+            methods=["GET"]
+        )
+        self.endpoint: str = endpoint
+        self.data_SMS_path = data_SMS_path
+        self.graph_image_path = graph_image_path
+
+    def read_root(self):
+        return {"message": "Hello, World!"}
+
+    def represent_graph(self):
+        graph_representation.show_graph(self.data_SMS_path, self.graph_image_path)
+        return FileResponse("/data/images/graph.png")
 
 
 def example_match_request() -> dict:
@@ -65,6 +115,7 @@ def example_match_post() -> dict:
     )
     matches_list = service_model.MatchesList(matches=[match1, match2, match3, match4]).dict()
     return matches_list
+
 
 def basic_test():
     url_get = "http://127.0.0.1:8000/get_matches"
@@ -162,7 +213,6 @@ def get_all_sms():
             save_as_json(file_path, response)
 
 
-
 def wait_server():
     tries = 0
     max_tries = 10
@@ -187,10 +237,28 @@ def wait_server():
 def main():
     os.makedirs('./data', exist_ok=True)
     os.makedirs('./data/SMS', exist_ok=True)
+    os.makedirs('./data/images', exist_ok=True)
+    # TODO Change all file_paths to differentiate between Docker and no Docker
+    print("Created images")
+    """   
     print("Starting...")
     wait_server()
     test_multiple_sms()
     # get_all_sms()
+
+    graph_representation.show_graph(data_path, image_path)
+    """
+    TEST_SERVICE = TestService(
+        endpoint=config['SERVICE']['endpoint'],
+        data_path=data_SMS_path,
+        graph_image_path=image_path
+    )
+    APP = FastAPI()
+    APP.include_router(
+        TEST_SERVICE.router
+    )
+    print(f"Starting server on host 0.0.0.0 and port {int(config['SERVICE']['PORT'])}")
+    uvicorn.run(APP, host="0.0.0.0", port=int(config["SERVICE"]["PORT"]))
 
 
 if __name__ == "__main__":

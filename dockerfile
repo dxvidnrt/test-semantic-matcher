@@ -16,5 +16,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Define environment variable
 ENV NAME World
 
+# Expose the port that FastAPI will run on
+EXPOSE 8100
+
 # Run service.py when the container launches
 CMD ["python", "test/service.py"]
