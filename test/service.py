@@ -60,6 +60,7 @@ class TestService:
         self.data_image_path = data_image_path
 
     def represent_graph(self):
+        get_all_sms()
         graph_representation.show_graph(self.data_SMS_path, self.data_image_path)
         return FileResponse(f"{data_image_path}/graph.png")
 
