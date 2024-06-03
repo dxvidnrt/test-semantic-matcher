@@ -1,6 +1,7 @@
 import requests
 from semantic_matcher import service_model, model
 import graph_representation
+import test_creater
 import configparser
 import time
 import json
@@ -109,6 +110,21 @@ def example_match_post() -> dict:
     return matches_list
 
 
+def save_as_json(file_path: str, response):
+    try:
+        # Parse the response content as JSON
+        data = response.json()
+
+        # Write the JSON data to the file
+        with open(file_path, 'w') as f:
+            json.dump(data, f, indent=4)  # indent=4 for pretty-printing
+
+        print(f"Data saved to {file_path}")
+    except ValueError:
+        print("Response content is not valid JSON")
+
+
+
 def basic_test():
     url_get = "http://127.0.0.1:8000/get_matches"
     url_post = "http://127.0.0.1:8000/post_matches"
@@ -125,20 +141,6 @@ def basic_test():
     # print(response.text)
     response = requests.get(url_get, json=example_match_request())
     print(f"Request after adding: {response.text}")
-
-
-def save_as_json(file_path: str, response):
-    try:
-        # Parse the response content as JSON
-        data = response.json()
-
-        # Write the JSON data to the file
-        with open(file_path, 'w') as f:
-            json.dump(data, f, indent=4)  # indent=4 for pretty-printing
-
-        print(f"Data saved to {file_path}")
-    except ValueError:
-        print("Response content is not valid JSON")
 
 
 def test_multiple_sms():
@@ -226,7 +228,17 @@ def wait_server():
         raise ConnectionError("No Endpoints found")
 
 
-def post_graphs(file_path):
+def clear_all_sms():
+    if 'ENDPOINTS' in config:
+        for sms, endpoint in config["ENDPOINTS"].items():
+            url = f'{endpoint}/clear'
+            print(f"url: {url}")
+            response = requests.post(url)
+
+
+def post_test_case(file_path):
+    print("Clear all SMS")
+    clear_all_sms()
     print(f"Filepath: {file_path}")
     if os.path.exists(file_path):
         with open(file_path, 'r') as file:
@@ -253,6 +265,7 @@ def post_graphs(file_path):
 
         print(f"Matches lists: {matches_lists}")
         for base_semantic_id, matches_list in matches_lists.items():
+            print(f"Base_semantic_id: {base_semantic_id}")
             request_body = resolver_service.SMSRequest(semantic_id=base_semantic_id)
             endpoint = config['RESOLVER']['endpoint']
             port = config['RESOLVER'].getint('port')
@@ -265,6 +278,7 @@ def post_graphs(file_path):
                 response_json = response.json()
                 semantic_matching_service_endpoint = response_json['semantic_matching_service_endpoint']
                 url = f"{semantic_matching_service_endpoint}/post_matches"
+                print(f"url: {url}")
                 response = requests.post(url, json=matches_list.dict())
                 print(f"Response: {response.status_code}")
 
@@ -280,9 +294,13 @@ def main():
     os.makedirs(data_image_path, exist_ok=True)
     print("Starting...")
     wait_server()
-    test_multiple_sms()
-    get_all_sms()
-    post_graphs(f'{test_graphs_path}/test_graph.json')
+    # test_multiple_sms()
+    # get_all_sms()
+    # post_test_case(f'{test_graphs_path}/test_graph.json')
+    # get_all_sms()
+    clear_all_sms()
+    test_creater.test_case_simple_circle()
+    post_test_case(f'{test_graphs_path}/simple_circle.json')
 
     TEST_SERVICE = TestService(
         endpoint=config['SERVICE']['endpoint'],
@@ -296,7 +314,6 @@ def main():
     TEST_SERVICE.represent_graph()
     print(f"Starting server on host 0.0.0.0 and port {int(config['SERVICE']['PORT'])}")
     uvicorn.run(APP, host="0.0.0.0", port=int(config["SERVICE"]["PORT"]))
-
 
 if __name__ == "__main__":
     main()
