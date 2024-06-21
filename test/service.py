@@ -208,27 +208,6 @@ def get_all_sms():
             save_as_json(file_path, response)
 
 
-def wait_server():
-    tries = 0
-    max_tries = 10
-    if 'ENDPOINTS' in config:
-        semantic_server_list = list(config['ENDPOINTS'].items())
-        while len(semantic_server_list) != 0:
-            if tries > max_tries:
-                raise ConnectionError("Exceeded max tries to connect")
-            tries += 1
-            for name, url in semantic_server_list:
-                try:
-                    response = requests.get(url)
-                    if response.status_code == 200:
-                        semantic_server_list.remove((name, url))
-                except requests.exceptions.RequestException as e:
-                    print(f"Error connecting to {url}: {e}")
-            time.sleep(1)
-    else:
-        raise ConnectionError("No Endpoints found")
-
-
 def clear_all_sms():
     if 'ENDPOINTS' in config:
         for sms, endpoint in config["ENDPOINTS"].items():
@@ -286,7 +265,6 @@ def post_test_case(file_path):
     else:
         print(f"File '{file_path}' does not exist.")
 
-# TODO Save graph tests as json in a folder
 
 
 def main():
@@ -294,7 +272,6 @@ def main():
     os.makedirs(data_SMS_path, exist_ok=True)
     os.makedirs(data_image_path, exist_ok=True)
     print("Starting...")
-    wait_server()
     # test_multiple_sms()
     # get_all_sms()
     # post_test_case(f'{test_graphs_path}/test_graph.json')
