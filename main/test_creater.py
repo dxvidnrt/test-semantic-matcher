@@ -1,4 +1,4 @@
-# This file stores methods to create and store different test cases as json in data/test_graphs
+# This file stores methods to create and store different main cases as json in data/test_graphs
 from semantic_matcher import service_model, model
 import json
 import os

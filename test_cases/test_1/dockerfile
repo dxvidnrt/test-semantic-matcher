@@ -20,6 +20,6 @@ ENV NAME World
 EXPOSE 8100
 
 # Run service.py when the container launches
-CMD ["python", "test/service.py"]
+CMD ["python", "service.py"]
 
 #Probably not needed when requirements are in test_cases

@@ -51,9 +51,8 @@ def show_graph(directory, image_path):
     plt.axis("off")
 
     plt.savefig(f'{image_path}/graph.png')
-    print(f"Saved graph to {image_path}/graph.png")
 
     plt.show()
 
-# If you want to test this function in the same file, you can call it like this:
+# If you want to main this function in the same file, you can call it like this:
 # show_graph_all_sms('../data/SMS')

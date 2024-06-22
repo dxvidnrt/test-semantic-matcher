@@ -17,9 +17,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 ENV NAME World
 
 # Expose the port that FastAPI will run on
+#TODO check if still needed
 EXPOSE 8100
 
 # Run service.py when the container launches
-CMD ["python", "test/service.py"]
+CMD ["python", "service.py"]
 
 #Probably not needed when requirements are in test_cases

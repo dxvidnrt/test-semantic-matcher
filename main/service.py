@@ -10,59 +10,9 @@ from fastapi import APIRouter, FastAPI, File, HTTPException
 import uvicorn
 from fastapi.responses import FileResponse
 from resolver_modules import service as resolver_service
+import json_util
 
 
-def running_in_docker():
-    return os.path.exists('/.dockerenv')
-
-
-if running_in_docker():
-    config_path = './config.ini.default'  # Use relative path within Docker container
-    data_path = './data'
-
-else:
-    config_path = '../config.ini.default'  # Use relative path when running on its own
-    data_path = '../data'
-
-data_SMS_path = f'{data_path}/SMS'
-data_image_path = f'{data_path}/images'
-test_graphs_path = f'{data_path}/test_graphs'
-
-
-config = configparser.ConfigParser()
-
-config.read(config_path)
-
-sms1_address_post = f"{config['ENDPOINTS']['sms1']}/{config['SMS']['url_post']}"
-sms1_address_get = f"{config['ENDPOINTS']['sms1']}/{config['SMS']['url_get']}"
-
-sms2_address_post = f"{config['ENDPOINTS']['sms2']}/{config['SMS']['url_post']}"
-sms2_address_get = f"{config['ENDPOINTS']['sms2']}/{config['SMS']['url_get']}"
-
-
-class TestService:
-    def __init__(
-            self,
-            endpoint: str,
-            data_SMS_path: str,
-            data_image_path: str
-    ):
-        self.router = APIRouter()
-
-        self.router.add_api_route(
-            "/",
-            self.represent_graph,
-            methods=["GET"]
-        )
-
-        self.endpoint: str = endpoint
-        self.data_SMS_path = data_SMS_path
-        self.data_image_path = data_image_path
-
-    def represent_graph(self):
-        get_all_sms()
-        graph_representation.show_graph(self.data_SMS_path, self.data_image_path)
-        return FileResponse(f"{data_image_path}/graph.png")
 
 
 def example_match_request() -> dict:
@@ -111,35 +61,17 @@ def example_match_post() -> dict:
     return matches_list
 
 
-def save_as_json(file_path: str, response):
-    try:
-        # Parse the response content as JSON
-        data = response.json()
-
-        # Write the JSON data to the file
-        with open(file_path, 'w') as f:
-            json.dump(data, f, indent=4)  # indent=4 for pretty-printing
-
-        print(f"Data saved to {file_path}")
-    except ValueError:
-        print("Response content is not valid JSON")
-
-
-
 def basic_test():
     url_get = "http://127.0.0.1:8000/get_matches"
     url_post = "http://127.0.0.1:8000/post_matches"
     url_get_all = "http://127.0.0.1:8000/all_matches"
 
     response = requests.get(url_get_all)
-    # print(response.text)
     response = requests.get(url_get, json=example_match_request())
     # print(f"Request before adding: {response.text}")
     response = requests.post(url_post, json=example_match_post())
-    # print(f"Added: {example_match_post()}")
     response = requests.get(url_get_all)
     graph_representation.show_sms(response.json())
-    # print(response.text)
     response = requests.get(url_get, json=example_match_request())
     print(f"Request after adding: {response.text}")
 
@@ -153,7 +85,6 @@ def test_multiple_sms():
     )
     matches_list = service_model.MatchesList(matches=[match_sms_1]).dict()
     response = requests.post(sms1_address_post, json=matches_list)
-    print(f"Post to SMS1 {response.status_code}")
 
     match_sms_2 = model.SemanticMatch(
         base_semantic_id='dxvidnrt.com/semanticID/dav_1',
@@ -163,7 +94,6 @@ def test_multiple_sms():
     )
     matches_list = service_model.MatchesList(matches=[match_sms_2]).dict()
     response = requests.post(sms2_address_post, json=matches_list)
-    print(f"Post to SMS2 {response.status_code}")
 
     req_sms_1 = service_model.MatchRequest(
         semantic_id='s-heppner.com/semanticID/seb_1',
@@ -177,7 +107,7 @@ def test_multiple_sms():
     if response.status_code == 200:
         file_path = 'data/response.json'
 
-        save_as_json(file_path, response)
+        json_util.save_as_json(file_path, response)
     else:
         print(f"Request failed with status code {response.status_code}")
         print("Response text:", response.text)
@@ -205,7 +135,7 @@ def get_all_sms():
 
             file_path = f'data/SMS/{name}.json'
 
-            save_as_json(file_path, response)
+            json_util.save_as_json(file_path, response)
 
 
 def clear_all_sms():
@@ -217,6 +147,11 @@ def clear_all_sms():
 
 
 def post_test_case(file_path):
+    """
+    Post a main case defined by file_path to the corresponding SMS
+    :param file_path:
+    :return:
+    """
     print("Clear all SMS")
     clear_all_sms()
     print(f"Filepath: {file_path}")

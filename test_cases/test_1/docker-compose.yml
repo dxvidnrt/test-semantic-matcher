@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  semantic_id_resolver:
+    build:
+      context: ../../../semantic_id_resolver
+    ports:
+      - "8125:8125"
+    networks:
+      - semantic_network
+    depends_on:
+      - python-semantic-matcher_1
+      - python-semantic-matcher_2
+
+  python-semantic-matcher_1:
+    container_name: python-semantic-matcher_1
+    build:
+      context: ../../../python-semantic-matcher #TODO install via pip in Dockerfile
+    ports:
+      - "8000:8000"
+    networks:
+      - semantic_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://python-semantic-matcher_1:8000"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  python-semantic-matcher_2:
+    container_name: python-semantic-matcher_2
+    build:
+      context: ../../../python-semantic-matcher
+    ports:
+      - "8001:8000"
+    networks:
+      - semantic_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://python-semantic-matcher_2:8000"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  test-semantic-matcher:
+    build:
+      context: ../../../test-semantic-matcher/test_cases/test_1
+    ports:
+      - "8100:8100"
+    networks:
+      - semantic_network
+    volumes:
+      - ./data:/app/data
+      - ../../main:/app/main
+    depends_on:
+      - python-semantic-matcher_1
+      - python-semantic-matcher_2
+
+networks:
+  semantic_network:
+    driver: bridge
