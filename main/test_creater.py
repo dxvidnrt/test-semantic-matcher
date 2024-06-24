@@ -3,6 +3,8 @@ from semantic_matcher import service_model, model
 import json
 import os
 
+#TODO remove when implemented all tests.
+
 
 def running_in_docker():
     return os.path.exists('/.dockerenv')
@@ -67,5 +69,5 @@ def test_case_simple_circle():
         meta_information={'matchSource': 'Defined by David Niebert'}
     )
     matches_list = [match_sms_1, match_sms_2, match_sms_3]
-    path = f'{data_path}/test_graphs/simple_circle.json'
+    path = f'{data_path}/test.json'
     save_as_json(path, matches_list)

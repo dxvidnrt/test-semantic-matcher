@@ -1,7 +1,8 @@
 import configparser
 import os
-from main import graph_representation, json_util, sms_util
 import test_creater
+from main import json_util, graph_representation, sms_util
+import subprocess
 
 config_path = './config.ini.default'
 data_path = './data'
@@ -20,7 +21,7 @@ def main():
     os.makedirs(data_image_path, exist_ok=True)  # TODO check if do in start_all
     sms_util.clear_all_sms(config)
     test_creater.test_case_simple_circle()
-    test_path = f'{data_path}/simple_circle.json'  # TODO Name test in every test_i folder
+    test_path = f'{data_path}/test.json'  # TODO Name test in every test_i folder
     sms_util.post_test_case(test_path, config)
     sms_util.get_all_sms(config)
     graph_representation.show_graph(f'{data_path}/SMS', f'{data_path}/images')

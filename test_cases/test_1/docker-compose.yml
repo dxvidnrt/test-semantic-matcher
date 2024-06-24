@@ -3,7 +3,8 @@ version: '3.8'
 services:
   semantic_id_resolver:
     build:
-      context: ../../../semantic_id_resolver
+      context: https://github.com/dxvidnrt/semantic_id_resolver.git
+      #context: ../../../semantic_id_resolver
     ports:
       - "8125:8125"
     networks:
@@ -13,9 +14,9 @@ services:
       - python-semantic-matcher_2
 
   python-semantic-matcher_1:
-    container_name: python-semantic-matcher_1
+    # container_name: python-semantic-matcher_1
     build:
-      context: ../../../python-semantic-matcher #TODO install via pip in Dockerfile
+      context: https://github.com/dxvidnrt/python-semantic-matcher.git #TODO install via pip in Dockerfile
     ports:
       - "8000:8000"
     networks:
@@ -27,9 +28,9 @@ services:
       retries: 5
 
   python-semantic-matcher_2:
-    container_name: python-semantic-matcher_2
+    # container_name: python-semantic-matcher_2
     build:
-      context: ../../../python-semantic-matcher
+      context: https://github.com/dxvidnrt/python-semantic-matcher.git
     ports:
       - "8001:8000"
     networks:
@@ -42,7 +43,7 @@ services:
 
   test-semantic-matcher:
     build:
-      context: ../../../test-semantic-matcher/test_cases/test_1
+      context: .
     ports:
       - "8100:8100"
     networks:

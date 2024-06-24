@@ -1,7 +1,8 @@
 import configparser
 import os
-from main import graph_representation, json_util, sms_util
+from main import json_util, graph_representation, sms_util
 import test_creater
+import subprocess
 
 config_path = './config.ini.default'
 data_path = './data'

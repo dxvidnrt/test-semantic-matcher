@@ -51,5 +51,5 @@ def test_case_simple_circle():
         meta_information={'matchSource': 'Defined by David Niebert'}
     )
     matches_list = [match_sms_1, match_sms_2, match_sms_3]
-    path = f'{data_path}/simple_circle.json'
+    path = f'{data_path}/test.json'
     save_as_json(path, matches_list)
