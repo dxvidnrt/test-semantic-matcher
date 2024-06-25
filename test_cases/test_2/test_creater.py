@@ -1,7 +1,5 @@
-# Thi file stores methods to create and store different main cases as json in data/test_graphs
 from semantic_matcher import service_model, model
 import json
-import os
 
 config_path = './config.ini.default'  # Use relative path within Docker container
 data_path = './data'
@@ -16,7 +14,7 @@ def match_to_dict(match: model.SemanticMatch):
     }
 
 
-def save_as_json(file_path: str, matches_list): #TODO rename and integrate into util
+def save_as_json(file_path: str, matches_list): #TODO rename and integrate into main
     try:
         match_dict = {}
         # Convert the matches_list to a dictionary that can be serialized to JSON
