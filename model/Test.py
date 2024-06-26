@@ -19,7 +19,7 @@ class TestModel(ABC):
     def init(self):
         os.makedirs(self.data_path, exist_ok=True)
         os.makedirs(self.data_SMS_path, exist_ok=True)
-        os.makedirs(self.data_image_path, exist_ok=True)  # TODO check if do in start_all
+        os.makedirs(self.data_image_path, exist_ok=True)
         self.config.read(self.config_path)
         sms_util.clear_all_sms(self.config)
     @abstractmethod
