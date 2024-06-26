@@ -42,6 +42,7 @@ services:
       retries: 5
 
   test-semantic-matcher:
+    # command: tail -f /dev/null
     build:
       context: .
     ports:
@@ -51,6 +52,8 @@ services:
     volumes:
       - ./data:/app/data
       - ../../main:/app/main
+      - ../../util:/app/util
+      - ../../model:/app/model
     depends_on:
       - python-semantic-matcher_1
       - python-semantic-matcher_2

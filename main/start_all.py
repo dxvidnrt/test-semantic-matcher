@@ -7,10 +7,9 @@ import json
 
 
 def install_requirements(test_dir):
-    requirements_path = os.path.join(test_dir, 'requirements.txt')
+    requirements_path = os.path.join(test_dir, '../requirements.txt')
     if os.path.exists(requirements_path):
         try:
-            print(f"Installing requirements in {test_dir}")
             subprocess.run(['pip', 'install', '-r', requirements_path], check=True)
         except subprocess.CalledProcessError as e:
             print(f"Failed to install requirements in {test_dir}: {e}")
@@ -18,16 +17,38 @@ def install_requirements(test_dir):
 
 def start_docker_compose(test_dir, log_file):
     try:
+        # Open the log file for appending
         with open(log_file, 'a') as f:
-            subprocess.run(
-                ['docker-compose', 'up', '-d'],
-                check=True,
-                cwd=test_dir,
-                stdout=f,
-                stderr=subprocess.STDOUT  # Merge stderr with stdout
-            )
+            # Start docker-compose up -d
+            subprocess.run(['docker-compose', 'up', '-d'], cwd=test_dir, check=True, stdout=f, stderr=subprocess.STDOUT)
+
+            # Start streaming logs from all containers
+            process = subprocess.Popen(['docker-compose', 'logs', '-f'], stdout=subprocess.PIPE,
+                                       stderr=subprocess.STDOUT, universal_newlines=True)
+
+            # Write a starting message in the log file
+            f.write(f"Started docker-compose up -d at {datetime.datetime.now()}\n")
+            f.flush()
+
+            # Continuously stream and write logs to the log file
+            while True:
+                line = process.stdout.readline().strip()
+                if not line:
+                    f.write("Break triggered")
+                    f.flush()
+                    break
+                f.write(line + '\n')
+                f.flush()
+
     except subprocess.CalledProcessError as e:
-        print(f"Failed to start services in {test_dir}: {e}")
+        print(f"Failed to start docker-compose: {e}")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+    finally:
+        # Ensure the subprocess is terminated
+        if 'process' in locals():
+            process.terminate()
+            process.wait()
 
 
 def clone_repos():
@@ -51,6 +72,7 @@ def stop_and_cleanup(test_dir, log_file):
 
 
 def wait_for_services(test_dir, log_file):
+
     def get_container_exit_code(container_id):
         result = subprocess.run(['docker', 'inspect', '--format', '{{.State.ExitCode}}', container_id],
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
@@ -132,7 +154,7 @@ def wait_for_services(test_dir, log_file):
                 if not line:
                     break
                 line = line.strip()
-                f.write(line + '\n')  # Write each line to the log file
+                f.write('wait_for_service:' + line + '\n')  # Write each line to the log file
                 f.flush()  # Ensure the line is written immediately
 
                 # Periodically check if the container has exited
@@ -165,8 +187,8 @@ def wait_for_services(test_dir, log_file):
 
 def main():
     root_dir = os.path.dirname(os.path.abspath(__file__))
-    tests_dir = os.path.join(root_dir, 'test_cases')
-    log_dir = os.path.join(root_dir, 'logs')
+    tests_dir = os.path.join(root_dir, '../test_cases')
+    log_dir = os.path.join(root_dir, '../logs')
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
     current_datetime = datetime.datetime.now()
@@ -187,24 +209,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-def get_container_name(container_id):
-    try:
-        # Run docker inspect to get container details in JSON format
-        result = subprocess.run(['docker', 'inspect', '--format', '{{.Name}}', container_id],
-                                stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
-        if result.returncode != 0:
-            print(f"Error retrieving name for container {container_id}: {result.stderr.strip()}")
-            return None
-
-        # Remove any leading '/' character from the container name
-        container_name = result.stdout.strip()
-        if container_name.startswith('/'):
-            container_name = container_name[1:]
-
-        return container_name
-
-    except Exception as e:
-        print(f"Exception occurred while retrieving container {container_id} name: {str(e)}")
-        return None

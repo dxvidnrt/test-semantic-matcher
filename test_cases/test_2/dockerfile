@@ -4,6 +4,9 @@ FROM python:3.8-slim
 # Install Git
 RUN apt-get update && apt-get install -y git
 
+# Set PYTHONPATH environment variable
+ENV PYTHONPATH /app
+
 # Set the working directory in the container
 WORKDIR /app
 
@@ -20,7 +23,8 @@ ENV NAME World
 #TODO check if still needed
 EXPOSE 8100
 
-# Run service.py when the container launches
-CMD ["python", "service.py"]
+# Run start_test.py when the container launches
+CMD ["python", "main/start_test.py", "test_2"]
+#TODO get test 2 automatically
 
 #Probably not needed when requirements are in test_cases

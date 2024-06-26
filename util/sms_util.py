@@ -3,7 +3,7 @@ from resolver_modules import service as resolver_service
 import requests
 from semantic_matcher import service_model, model
 import os
-from main import json_util
+from util import json_util
 
 
 def clear_all_sms(config):
@@ -47,9 +47,7 @@ def post_test_case(file_path, config):
     :param file_path:
     :return:
     """
-    print("Clear all SMS")
     clear_all_sms(config)
-    print(f"Filepath: {file_path}")
     if os.path.exists(file_path):
         with open(file_path, 'r') as file:
             data = json.load(file)

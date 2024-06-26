@@ -10,11 +10,17 @@ RUN apt-get update && \
 # Install Git
 RUN apt-get update && apt-get install -y git
 
+# Set PYTHONPATH environment variable
+ENV PYTHONPATH /app
+
 # Set the working directory in the container
 WORKDIR /app
 
 # Copy the current directory contents into the container at /app
 COPY . /app
+
+RUN echo "Test"
+RUN echo "PYTHONPATH: $PYTHONPATH"
 
 # Install any needed dependencies specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
@@ -25,5 +31,5 @@ ENV NAME World
 # Expose the port that FastAPI will run on
 EXPOSE 8100
 
-# Run service.py when the container launches
-CMD ["python", "service.py"]
+# Run start_test.py when the container launches
+CMD ["python", "main/start_test.py", "test_1"]
