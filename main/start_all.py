@@ -6,15 +6,6 @@ import re
 import json
 
 
-def install_requirements(test_dir):
-    requirements_path = os.path.join(test_dir, '../requirements.txt')
-    if os.path.exists(requirements_path):
-        try:
-            subprocess.run(['pip', 'install', '-r', requirements_path], check=True)
-        except subprocess.CalledProcessError as e:
-            print(f"Failed to install requirements in {test_dir}: {e}")
-
-
 def start_docker_compose(test_dir, log_file):
     try:
         # Open the log file for appending
