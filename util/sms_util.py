@@ -30,8 +30,11 @@ def get_all_sms(config):
             name = endpoint_url[:-len(":8000")]
 
             file_path = f'./data/SMS/{name}.json'
-
-            json_util.save_as_json(file_path, response)
+            response_json = response.json()
+            print(f"Type of response_json: {type(response_json)}")
+            print(f"response_json: {response_json}")
+            equivalence_table = model.EquivalenceTable(matches=response_json)
+            json_util.save_as_json(file_path, equivalence_table)
 
 
 def clear_all_sms(config):
@@ -48,41 +51,38 @@ def post_test_case(file_path, config):
     :return:
     """
     clear_all_sms(config)
+
     if os.path.exists(file_path):
         with open(file_path, 'r') as file:
-            data = json.load(file)
-            matches_lists = {}
+            match_list = json.load(file, cls=json_util.CustomDecoder)
+            print(match_list)
+            matches_dict = {}
+            for match in match_list:
+                if isinstance(match, model.SemanticMatch):
+                    base_semantic_id = match.base_semantic_id
+                    if base_semantic_id not in matches_dict:
+                        matches_dict[base_semantic_id] = []
+                    matches_dict[base_semantic_id].append(match)
+                else:
+                    raise TypeError(f"{match} not of type SemanticMatch")
 
-            for base_semantic_id, matches_data in data.items():
-                matches = []
-                for match_data in matches_data:
-                    match = model.SemanticMatch(
-                        base_semantic_id=match_data['base_semantic_id'],
-                        match_semantic_id=match_data['match_semantic_id'],
-                        score=match_data['score'],
-                        meta_information=match_data['meta_information']
-                    )
-                    matches.append(match)
-                if base_semantic_id not in matches_lists:
-                    matches_lists[base_semantic_id] = service_model.MatchesList(matches=[])
-                stored_matches = matches_lists[base_semantic_id].matches
-                stored_matches.extend(matches)
-                matches_lists[base_semantic_id] = service_model.MatchesList(matches=stored_matches)
+            for base_semantic_id, matches_list in matches_dict.items():
+                request_body = resolver_service.SMSRequest(semantic_id=base_semantic_id)
+                endpoint = config['RESOLVER']['endpoint']
+                port = config['RESOLVER'].getint('port')
+                url = f"{endpoint}:{port}/get_semantic_matching_service"
+                response = requests.get(url, json=request_body.dict())
 
-        for base_semantic_id, matches_list in matches_lists.items():
-            request_body = resolver_service.SMSRequest(semantic_id=base_semantic_id)
-            endpoint = config['RESOLVER']['endpoint']
-            port = config['RESOLVER'].getint('port')
-            url = f"{endpoint}:{port}/get_semantic_matching_service"
-            response = requests.get(url, json=request_body.dict())
-
-            # Check if the response is successful (status code 200)
-            if response.status_code == 200:
-                # Parse the JSON response and construct SMSResponse object
-                response_json = response.json()
-                semantic_matching_service_endpoint = response_json['semantic_matching_service_endpoint']
-                url = f"{semantic_matching_service_endpoint}/post_matches"
-                response = requests.post(url, json=matches_list.dict())
+                # Check if the response is successful (status code 200)
+                if response.status_code == 200:
+                    # Parse the JSON response and construct SMSResponse object
+                    response_json = response.json()
+                    semantic_matching_service_endpoint = response_json['semantic_matching_service_endpoint']
+                    url = f"{semantic_matching_service_endpoint}/post_matches"
+                    json_matches_list = json.dumps({'matches': matches_list}, indent=4, cls=json_util.CustomEncoder)
+                    print("json_matches_list")
+                    print(json_matches_list)
+                    response = requests.post(url, data=json_matches_list, headers={'Content-Type': 'application/json'})
 
     else:
         print(f"File '{file_path}' does not exist.")
