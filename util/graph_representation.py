@@ -13,14 +13,13 @@ def show_graph(directory, image_path):
         if filename.endswith(".json"):
             filepath = os.path.join(directory, filename)
             with open(filepath, "r") as file:
-                data = json.load(file)
-                # Iterate over each semantic ID and its matches in the JSON data
-                for base_semantic_id, matches in data.items():
-                    for match in matches:
-                        match_semantic_id = match["match_semantic_id"]
-                        score = match["score"]
-                        # Add edge from base_semantic_id to match_semantic_id with the score as weight
-                        G.add_edge(base_semantic_id, match_semantic_id, score=score)
+                matches = json.load(file)
+                for match in matches:
+                    base_semantic_id = match["base_semantic_id"]
+                    match_semantic_id = match["match_semantic_id"]
+                    score = match["score"]
+                    # Add edge from base_semantic_id to match_semantic_id with the score as weight
+                    G.add_edge(base_semantic_id, match_semantic_id, score=score)
 
     # Modify the label of each node
     node_labels = {node: node.split("/")[-1] for node in G.nodes()}  # Use only the last part of the ID
@@ -51,9 +50,8 @@ def show_graph(directory, image_path):
     plt.axis("off")
 
     plt.savefig(f'{image_path}/graph.png')
-    print(f"Saved graph to {image_path}/graph.png")
 
     plt.show()
 
-# If you want to test this function in the same file, you can call it like this:
+# If you want to main this function in the same file, you can call it like this:
 # show_graph_all_sms('../data/SMS')

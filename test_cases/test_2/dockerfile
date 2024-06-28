@@ -4,6 +4,9 @@ FROM python:3.8-slim
 # Install Git
 RUN apt-get update && apt-get install -y git
 
+# Set PYTHONPATH environment variable
+ENV PYTHONPATH /app
+
 # Set the working directory in the container
 WORKDIR /app
 
@@ -16,8 +19,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Define environment variable
 ENV NAME World
 
-# Expose the port that FastAPI will run on
-EXPOSE 8100
+# Run start_test.py when the container launches
+CMD ["python", "main/start_test.py", "test_2"]
 
-# Run service.py when the container launches
-CMD ["python", "test/service.py"]
+#Probably not needed when requirements are in test_cases
