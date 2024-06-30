@@ -34,7 +34,7 @@ class Test(TestModel):
     def evaluate(self):
         sms_util.get_all_sms(self.config)
         graph_representation.show_graph(self.data_SMS_path, self.data_image_path)
-        if json_util.check_test(self.data_path):
+        if json_util.check_sms(self.data_path):
             print("Test_1 worked correctly")
         else:
             raise AssertionError("Test_1 failed")

@@ -3,6 +3,7 @@ import os
 from collections import Counter
 
 from semantic_matcher.model import SemanticMatch, EquivalenceTable
+from semantic_matcher.service_model import MatchRequest
 
 
 class CustomEncoder(json.JSONEncoder):
@@ -21,6 +22,14 @@ class CustomEncoder(json.JSONEncoder):
             for _, matches_list in obj.matches.items():
                 concated_matches_list.extend(matches_list)
             return concated_matches_list  # Return as Python list for further serialization
+        elif isinstance(obj, MatchRequest):
+            return {
+                "semantic_id": obj.semantic_id,
+                "score_limit": obj.score_limit,
+                "local_only": obj.local_only,
+                "name": obj.name,
+                "definition": obj.definition
+            }
         else:
             return super().default(obj)
 
@@ -99,9 +108,13 @@ def compare_json(file_path_1, file_path_2):
     return sorted_list1 == sorted_list2
 
 
-def check_test(data_path):
-    # TODO Be able to merge result of multiple json SMS to be comparable to test_case
-    # TODO work for all test cases
+def check_sms(data_path):
     test_path = os.path.join(data_path, 'test', 'test.json')
     sms_path = os.path.join(data_path, 'SMS')  # Use SMS folder to construct big json
     return compare_json(test_path, sms_path)
+
+
+def check_matches(data_path):
+    retrieved_matches_path = os.path.join(data_path, 'test', 'retrieved_matches.json')
+    expected_matches_path = os.path.join(data_path, 'test', 'expected_matches.json')
+    return compare_json(retrieved_matches_path, expected_matches_path)
