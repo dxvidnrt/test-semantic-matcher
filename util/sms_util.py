@@ -31,8 +31,6 @@ def get_all_sms(config):
 
             file_path = f'./data/SMS/{name}.json'
             response_json = response.json()
-            print(f"Type of response_json: {type(response_json)}")
-            print(f"response_json: {response_json}")
             equivalence_table = model.EquivalenceTable(matches=response_json)
             json_util.save_as_json(file_path, equivalence_table)
 
@@ -43,6 +41,17 @@ def clear_all_sms(config):
             url = f'{endpoint}/clear'
             response = requests.post(url)
 
+
+def get_matches_sms(match_request, endpoint, path, config):
+    page = config['SMS']['url_get']
+    url = f'{endpoint}/{page}'
+    print(f"URL: {url}")
+    response = requests.get(url, json=match_request.dict())
+    print(f"Response: {response}")
+    response_json = response.json()
+    print(f"Response_json: {response_json}")
+    matches_list = response_json["matches"]
+    json_util.save_as_json(path, matches_list)
 
 def post_test_case(file_path, config):
     """

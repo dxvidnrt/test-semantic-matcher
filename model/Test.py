@@ -14,6 +14,8 @@ class TestModel(ABC):
         self.test_graphs_path = os.path.join(self.data_path, 'test_graphs')
         self.test_path = os.path.join(self.data_path, 'test')
         self.test_json_path = os.path.join(self.test_path, 'test.json')
+        self.expected_matches_path = os.path.join(self.test_path, 'expected_matches.json')
+        self.retrieved_matches_path = os.path.join(self.test_path, 'retrieved_matches.json')
         self.config = configparser.ConfigParser()
         self.init()
 
