@@ -66,7 +66,6 @@ def save_as_json(file_path: str, data):
 
         # Write the JSON data to the file
         with open(file_path, 'w') as f:
-            print(f"Data: {data}")
             json.dump(data, f, indent=4, cls=CustomEncoder)  # indent=4 for pretty-printing
 
     except ValueError:
@@ -96,8 +95,6 @@ def compare_json(file_path_1, file_path_2):
 
     json_1 = load_json(file_path_1)
     json_2 = load_json(file_path_2)
-    print(f"Json1: {json_1}")
-    print(f"Json2: {json_2}")
     if not isinstance(json_1, list) and all(isinstance(item, SemanticMatch) for item in json_1):
         raise TypeError
     if not isinstance(json_2, list) and all(isinstance(item, SemanticMatch) for item in json_2):

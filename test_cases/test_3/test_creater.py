@@ -38,11 +38,3 @@ class Test(TestModel):
         )
         endpoint = self.config['ENDPOINTS']['sms2']
         sms_util.get_matches_sms(match_request, endpoint, self.retrieved_matches_path, self.config)
-
-    def evaluate(self):
-        sms_util.get_all_sms(self.config)
-        graph_representation.show_graph(self.data_SMS_path, self.data_image_path)
-        if json_util.check_sms(self.data_path) and json_util.check_matches(self.data_path):
-            print("Test_3 worked correctly")
-        else:
-            raise AssertionError("Test_3 failed")

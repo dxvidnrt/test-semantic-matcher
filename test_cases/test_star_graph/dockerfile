@@ -20,6 +20,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 ENV NAME World
 
 # Run start_test.py when the container launches
-CMD ["python", "main/start_test.py", "test_2"]
+CMD ["python", "main/start_test.py", "test_star_graph"]
 
 #Probably not needed when requirements are in test_cases

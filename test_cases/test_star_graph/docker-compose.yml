@@ -5,7 +5,7 @@ services:
     build:
       context: https://github.com/dxvidnrt/semantic_id_resolver.git
     ports:
-      - "8125:8015"
+      - "8125:8125"
     networks:
       - semantic_network
     depends_on:

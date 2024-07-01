@@ -21,11 +21,3 @@ class Test(TestModel):
 
     def run(self):
         sms_util.post_test_case(self.test_json_path, self.config)
-
-    def evaluate(self):
-        sms_util.get_all_sms(self.config)
-        graph_representation.show_graph(self.data_SMS_path, self.data_image_path)
-        if json_util.check_sms(self.data_path):
-            print("Test_2 worked correctly")
-        else:
-            raise AssertionError("Test_2 failed")

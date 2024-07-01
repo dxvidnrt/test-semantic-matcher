@@ -8,7 +8,7 @@ from model import Test
 def main():
     arg1 = sys.argv[1]
 
-    if not re.search(r'test_\d+', arg1):
+    if not re.match(r'^test_', arg1):
         raise ValueError(f"{arg1} does not match the pattern 'test_\\d+'")
 
     # Construct the module name dynamically
@@ -23,7 +23,7 @@ def main():
         test_creater = importlib.import_module(module_name, package=path_to_test_i)
     except ModuleNotFoundError:
         raise ImportError(f"Failed to import module '{module_name}'")
-    test: Test = test_creater.Test()
+    test: Test = test_creater.Test(arg1)
     test.create()
     test.run()
     test.evaluate()
