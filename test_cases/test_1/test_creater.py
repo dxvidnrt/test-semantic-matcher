@@ -27,6 +27,3 @@ class Test(TestModel):
         )
         matches_list = [match_sms_1, match_sms_2, match_sms_3]
         json_util.save_as_json(self.test_json_path, matches_list)
-
-    def run(self):
-        sms_util.post_test_case(self.test_json_path, self.config)

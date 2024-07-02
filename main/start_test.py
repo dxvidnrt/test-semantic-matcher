@@ -3,6 +3,7 @@ import os
 import re
 import importlib
 from model import Test
+import subprocess
 
 
 def main():
@@ -18,15 +19,21 @@ def main():
     path_to_test_i = os.path.join('../test_cases', arg1)
     sys.path.insert(0, path_to_test_i)
 
+    # Check if docker-compose can be generated dynamically
+    generate_docker_compose_path = os.path.join(path_to_test_i, 'generate_docker_compose.py')
+    if os.path.isfile(generate_docker_compose_path):
+        try:
+            subprocess.run(['python', generate_docker_compose_path], check=True)
+        except subprocess.CalledProcessError as e:
+            print(f"Error: {e}")
+
     # Import the module dynamically
     try:
         test_creater = importlib.import_module(module_name, package=path_to_test_i)
     except ModuleNotFoundError:
         raise ImportError(f"Failed to import module '{module_name}'")
     test: Test = test_creater.Test(arg1)
-    test.create()
-    test.run()
-    test.evaluate()
+    test.start()
 
 
 if __name__ == "__main__":

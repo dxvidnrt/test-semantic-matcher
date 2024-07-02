@@ -5,10 +5,6 @@ port=8100
 [RESOLVER]
 endpoint=http://semantic_id_resolver
 port=8125
-fallback_semantic_matching_service=https://example.org/semantic_matching_service
-eclass_semantic_matching_service=https://example.org/semantic_matching_service
-cdd_semantic_matching_service=https://example.org/semantic_matching_service
-debug_semantic_matching_service_endpoints=../debug_endpoints.json
 
 [SMS]
 url_get=get_matches
@@ -16,5 +12,5 @@ url_post=post_matches
 url_get_all=all_matches
 
 [ENDPOINTS]
-sms1=http://python-semantic-matcher_1:8000
-sms2=http://python-semantic-matcher_2:8000
+s-heppner.com=http://python-semantic-matcher_1:8000
+dxvidnrt.com=http://python-semantic-matcher_2:8000

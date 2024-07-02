@@ -14,7 +14,6 @@ class Test(TestModel):
         self.score_limit = random.uniform(0, 1)
         self.server_names = ["dxvidnrt.com", "s-heppner.com"]  # TODO get from config/resolver
         self.center_server_name = random.choice(self.server_names)
-        self.match_request: service_model.MatchRequest = None
 
     def create(self):
         matches_list = []
@@ -34,13 +33,9 @@ class Test(TestModel):
                 expected_matches.append(match_i)
         json_util.save_as_json(self.test_json_path, matches_list)
         json_util.save_as_json(self.expected_matches_path, expected_matches)
-        print(f"Cut-off score: {self.score_limit}")
 
-    def run(self):
-        sms_util.post_test_case(self.test_json_path, self.config)
         self.match_request = service_model.MatchRequest(
             semantic_id=f'{self.center_server_name}/semanticID/center',
             score_limit=self.score_limit,
             local_only=False
         )
-

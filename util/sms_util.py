@@ -45,11 +45,8 @@ def clear_all_sms(config):
 def get_matches_sms(match_request, endpoint, path, config):
     page = config['SMS']['url_get']
     url = f'{endpoint}/{page}'
-    print(f"URL: {url}")
     response = requests.get(url, json=match_request.dict())
-    print(f"Response: {response}")
     response_json = response.json()
-    print(f"Response_json: {response_json}")
     matches_list = response_json["matches"]
     json_util.save_as_json(path, matches_list)
 
@@ -65,7 +62,6 @@ def post_test_case(file_path, config):
     if os.path.exists(file_path):
         with open(file_path, 'r') as file:
             match_list = json.load(file, cls=json_util.CustomDecoder)
-            print(match_list)
             matches_dict = {}
             for match in match_list:
                 if isinstance(match, model.SemanticMatch):
@@ -77,7 +73,6 @@ def post_test_case(file_path, config):
                     raise TypeError(f"{match} not of type SemanticMatch")
 
             for base_semantic_id, matches_list in matches_dict.items():
-                print(f"Base sem id: {base_semantic_id}")
                 request_body = resolver_service.SMSRequest(semantic_id=base_semantic_id)
                 endpoint = config['RESOLVER']['endpoint']
                 port = config['RESOLVER'].getint('port')
@@ -89,11 +84,8 @@ def post_test_case(file_path, config):
                     # Parse the JSON response and construct SMSResponse object
                     response_json = response.json()
                     semantic_matching_service_endpoint = response_json['semantic_matching_service_endpoint']
-                    print(f"Semantic_matching_service_endpoint: {semantic_matching_service_endpoint}")
                     url = f"{semantic_matching_service_endpoint}/post_matches"
                     json_matches_list = json.dumps({'matches': matches_list}, indent=4, cls=json_util.CustomEncoder)
-                    print("json_matches_list")
-                    print(json_matches_list)
                     response = requests.post(url, data=json_matches_list, headers={'Content-Type': 'application/json'})
 
     else:

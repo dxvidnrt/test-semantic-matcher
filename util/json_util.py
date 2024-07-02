@@ -72,46 +72,56 @@ def save_as_json(file_path: str, data):
         print("Response content is not valid JSON")
 
 
-def compare_json(file_path_1, file_path_2):
-    def load_json(path):
-        if os.path.isfile(path):
+def load_matches(path):
+    def load_json(json_path):
+        if os.path.isfile(json_path):
             try:
-                with open(path, 'r') as file:
-                    return json.load(file, cls=CustomDecoder)
+                with open(json_path, 'r') as file:
+                    json_data = json.load(file, cls=CustomDecoder)
+                    for match in json_data:
+                        match.meta_information = None
+                    return json_data
             except ValueError as e:
                 print(f"Invalid JSON: {e}")
-        elif os.path.isdir(path):
+        elif os.path.isdir(json_path):
             json_data = []
-            for file_name in os.listdir(path):
+            for file_name in os.listdir(json_path):
                 if not file_name.endswith('.json'):
                     raise ValueError(f"{file_name} is not a JSON")
-                file_path = os.path.join(path, file_name)
+                file_path = os.path.join(json_path, file_name)
                 with open(file_path, 'r') as json_file:
                     cur_json = json.load(json_file, cls=CustomDecoder)
                     json_data.extend(cur_json)
+            for match in json_data:
+                match.meta_information = None
             return json_data
         else:
-            raise FileNotFoundError(f"{path} is not a file or directory")
+            raise FileNotFoundError(f"{json_path} is not a file or directory")
 
-    json_1 = load_json(file_path_1)
-    json_2 = load_json(file_path_2)
+    json_1 = load_json(path)
     if not isinstance(json_1, list) and all(isinstance(item, SemanticMatch) for item in json_1):
         raise TypeError
-    if not isinstance(json_2, list) and all(isinstance(item, SemanticMatch) for item in json_2):
-        raise TypeError
-    sorted_list1 = sorted(json_1, key=lambda x: (x.base_semantic_id, x.match_semantic_id, x.score))
-    sorted_list2 = sorted(json_2, key=lambda x: (x.base_semantic_id, x.match_semantic_id, x.score))
-    # This will fail when only x.meta_information differs
-    return sorted_list1 == sorted_list2
+    sorted_list = sorted(json_1, key=lambda x: (x.base_semantic_id, x.match_semantic_id, x.score))
+    return sorted_list
 
 
 def check_sms(data_path):
     test_path = os.path.join(data_path, 'test', 'test.json')
     sms_path = os.path.join(data_path, 'SMS')  # Use SMS folder to construct big json
-    return compare_json(test_path, sms_path)
+    return load_matches(test_path) == load_matches(sms_path)
 
 
 def check_matches(data_path):
     retrieved_matches_path = os.path.join(data_path, 'test', 'retrieved_matches.json')
     expected_matches_path = os.path.join(data_path, 'test', 'expected_matches.json')
-    return compare_json(retrieved_matches_path, expected_matches_path)
+    expected_minimal_matches_path = os.path.join(data_path, 'test', 'minimal_matches.json')
+    if os.path.isfile(expected_matches_path):
+        if not load_matches(retrieved_matches_path) == load_matches(expected_matches_path):
+            return False
+    if os.path.isfile(expected_minimal_matches_path):
+        retrieved_matches = load_matches(retrieved_matches_path)
+        minimal_matches = load_matches(expected_minimal_matches_path)
+        for match in minimal_matches:
+            if match not in retrieved_matches:
+                return False
+    return True

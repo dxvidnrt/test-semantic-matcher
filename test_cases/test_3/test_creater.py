@@ -29,12 +29,9 @@ class Test(TestModel):
         expected_matches = [match_1, match_2]
         json_util.save_as_json(self.expected_matches_path, expected_matches)
 
-    def run(self):
-        sms_util.post_test_case(self.test_json_path, self.config)
-        match_request = service_model.MatchRequest(
+        self.match_request = service_model.MatchRequest(
             semantic_id='dxvidnrt.com/semanticID/Dog',
             score_limit=0.49,
             local_only=False
         )
-        endpoint = self.config['ENDPOINTS']['sms2']
-        sms_util.get_matches_sms(match_request, endpoint, self.retrieved_matches_path, self.config)
+
