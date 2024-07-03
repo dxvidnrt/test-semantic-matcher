@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   semantic_id_resolver:
+    image: local/semantic_id_resolver
     build:
       context: https://github.com/dxvidnrt/semantic_id_resolver.git
     ports:
@@ -13,6 +14,7 @@ services:
       - python-semantic-matcher_2
 
   python-semantic-matcher_1:
+    image: local/python-semantic-matcher
     build:
       context: https://github.com/dxvidnrt/python-semantic-matcher.git
     ports:
@@ -26,6 +28,7 @@ services:
       retries: 5
 
   python-semantic-matcher_2:
+    image: local/python-semantic-matcher
     build:
       context: https://github.com/dxvidnrt/python-semantic-matcher.git
     ports:
@@ -39,6 +42,7 @@ services:
       retries: 5
 
   test-semantic-matcher:
+    image: local/test-semantic-matcher
     build:
       context: .
     ports:

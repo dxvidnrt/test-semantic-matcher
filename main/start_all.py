@@ -4,6 +4,7 @@ import datetime
 import time
 import re
 import json
+import shutil
 
 
 def start_docker_compose(test_dir, log_file):
@@ -191,7 +192,9 @@ def main():
     for test_dir in sorted(os.listdir(tests_dir)):
         full_test_dir = os.path.join(tests_dir, test_dir)
         log_path = os.path.join(log_datetime_dir, f'{test_dir}.log')
+        data_path = os.path.join(full_test_dir, 'data')
         if os.path.isdir(full_test_dir) and test_dir.startswith('test_'):
+            shutil.rmtree(data_path)
             stop_and_cleanup(full_test_dir, log_path)
             start_docker_compose(full_test_dir, log_path)
             wait_for_services(full_test_dir, log_path)

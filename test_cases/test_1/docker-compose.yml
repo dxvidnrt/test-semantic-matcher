@@ -1,31 +1,23 @@
 version: '3.8'
 
 services:
-  semantic_id_resolver:
-    build:
-      context: https://github.com/dxvidnrt/semantic_id_resolver.git
-    ports:
-      - "8125:8125"
-    networks:
-      - semantic_network
-    depends_on:
-      - python-semantic-matcher_1
-      - python-semantic-matcher_2
 
   python-semantic-matcher_1:
-    build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
-    ports:
-      - "8000:8000"
-    networks:
-      - semantic_network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://python-semantic-matcher_1:8000"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      image: local/python-semantic-matcher
+      build:
+        context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      ports:
+        - "8000:8000"
+      networks:
+        - semantic_network
+      healthcheck:
+        test: ["CMD", "curl", "-f", "http://python-semantic-matcher_1:8000"]
+        interval: 10s
+        timeout: 5s
+        retries: 5
 
   python-semantic-matcher_2:
+    image: local/python-semantic-matcher
     build:
       context: https://github.com/dxvidnrt/python-semantic-matcher.git
     ports:
@@ -38,8 +30,20 @@ services:
       timeout: 5s
       retries: 5
 
+  semantic_id_resolver:
+    image: local/semantic_id_resolver
+    build:
+      context: https://github.com/dxvidnrt/semantic_id_resolver.git
+    ports:
+      - "8125:8125"
+    networks:
+      - semantic_network
+    depends_on:
+      - python-semantic-matcher_1
+      - python-semantic-matcher_2
+
   test-semantic-matcher:
-    # command: tail -f /dev/null
+    image: local/test-semantic-matcher
     build:
       context: .
     ports:

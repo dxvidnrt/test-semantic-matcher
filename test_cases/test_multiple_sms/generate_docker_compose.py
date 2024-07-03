@@ -19,13 +19,15 @@ services = []
 
 # Create services dynamically
 for i in range(num_services):
+    image = "local/python-semantic-matcher"
     service_name = f'python-semantic-matcher_{i + 1}'
-    context = "https://github.com/dxvidnrt/python-semantic-matcher.git#ChangeMatchInformation"
+    context = "https://github.com/dxvidnrt/python-semantic-matcher.git"
     port_host = 8000 + i
     port_container = 8010 + i
     services.append(f"http://{service_name}:8000")
 
     docker_compose_template['services'][service_name] = {
+        'image': image,
         'build': {
             'context': context
         },
@@ -45,8 +47,9 @@ for i in range(num_services):
 
 # Add semantic_id_resolver service
 docker_compose_template['services']['semantic_id_resolver'] = {
+    'image': 'local/semantic_id_resolver',
     'build': {
-        'context': 'https://github.com/dxvidnrt/semantic_id_resolver.git#FeaturePostDebugEndpoints'
+        'context': 'https://github.com/dxvidnrt/semantic_id_resolver.git'
     },
     'ports': [
         '8125:8015'
@@ -59,6 +62,7 @@ docker_compose_template['services']['semantic_id_resolver'] = {
 
 # Add test-semantic-matcher service
 docker_compose_template['services']['test-semantic-matcher'] = {
+    'image': 'local/test-semantic-matcher',
     'build': {
         'context': '.'
     },
