@@ -27,3 +27,9 @@ class Test(TestModel):
         )
         matches_list = [match_sms_1, match_sms_2, match_sms_3]
         json_util.save_as_json(self.test_json_path, matches_list)
+        json_util.save_as_json(self.expected_minimal_matches_path, [match_sms_2])
+        self.match_request = service_model.MatchRequest(
+            semantic_id='dxvidnrt.com/semanticID/1',
+            score_limit=0.6,
+            local_only=True
+        )

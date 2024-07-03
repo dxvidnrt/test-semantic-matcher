@@ -62,7 +62,6 @@ docker_compose_template['services']['semantic_id_resolver'] = {
 
 # Add test-semantic-matcher service
 docker_compose_template['services']['test-semantic-matcher'] = {
-    'image': 'local/test-semantic-matcher',
     'build': {
         'context': '.'
     },

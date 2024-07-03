@@ -10,18 +10,16 @@ import random
 class Test(TestModel):
     def __init__(self, name):
         super().__init__(name)
-        self.number_star_edges = random.randint(1, 10)
+        self.number_star_edges = random.randint(100, 200)
         self.score_limit = random.uniform(0, 1)
-        self.server_names = ["dxvidnrt.com", "s-heppner.com"]  # TODO get from config/resolver
-        self.center_server_name = random.choice(self.server_names)
+        self.center_server_name = self.get_random_sms()
 
     def create(self):
         matches_list = []
         expected_matches = []
 
-        # TODO Add function to get all adress name from id_resolver. Or load addresses into id:resolver from config.
         for i in range(self.number_star_edges):
-            server_name = random.choice(self.server_names)
+            server_name = self.get_random_sms()
             match_i = model.SemanticMatch(
                 base_semantic_id=f'{self.center_server_name}/semanticID/center',
                 match_semantic_id=f'{server_name}/semanticID/{i + 1}',

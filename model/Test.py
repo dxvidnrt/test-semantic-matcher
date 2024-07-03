@@ -5,6 +5,7 @@ import configparser
 from util import json_util, sms_util, graph_representation
 import requests
 from resolver_modules import service as resolver_service
+import random
 
 
 class TestModel(ABC):
@@ -20,17 +21,24 @@ class TestModel(ABC):
         self.expected_matches_path = os.path.join(self.test_path, 'expected_matches.json')
         self.expected_minimal_matches_path = os.path.join(self.test_path, 'minimal_matches.json')
         self.retrieved_matches_path = os.path.join(self.test_path, 'retrieved_matches.json')
-        self.config = configparser.ConfigParser()
-        self.match_request = None
-        self.name = name
 
-    def init(self):
         os.makedirs(self.data_path, exist_ok=True)
         os.makedirs(self.data_SMS_path, exist_ok=True)
         os.makedirs(self.data_image_path, exist_ok=True)
         os.makedirs(self.test_path, exist_ok=True)
+
+        self.config = configparser.ConfigParser()
         self.config.read(self.config_path)
+
+        self.match_request = None
+        self.name = name
+
+        self.sms = None
+        if 'ENDPOINTS' in self.config:
+            self.sms = [sms for sms, endpoint in self.config["ENDPOINTS"].items()]
+
         sms_util.clear_all_sms(self.config)
+
 
     @abstractmethod
     def create(self):
@@ -74,8 +82,10 @@ class TestModel(ABC):
         requests.post(resolver_url, json=debug_endpoints_request.dict())
 
     def start(self):
-        self.init()
         self.push_endpoints()
         self.create()
         self.run()
         self.evaluate()
+
+    def get_random_sms(self):
+        return random.choice(self.sms)

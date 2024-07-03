@@ -43,7 +43,6 @@ services:
       - python-semantic-matcher_2
 
   test-semantic-matcher:
-    image: local/test-semantic-matcher
     build:
       context: .
     ports:
