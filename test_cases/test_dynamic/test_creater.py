@@ -16,6 +16,7 @@ class Test(TestModel):
     def create(self):
         services = list(self.config['ENDPOINTS'].keys())
         number_semantic_ids = random.randint(30, 40)
+        sms_list = [str(i) for i in range(random.randint(5, 7))]
 
         matches_list = []
         expected_matches = []
@@ -28,7 +29,7 @@ class Test(TestModel):
                 base_semantic_id=last_match_semantic_id,
                 match_semantic_id=match_semantic_id,
                 score=1,
-                meta_information={'matchSource': 'Defined by David Niebert'}
+                meta_information={'matchSource': random.choice(sms_list)}
             )
             matches_list.append(match_i)
             expected_matches.append(match_i)

@@ -20,7 +20,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 ENV NAME World
 
 # Run start_test.py when the container launches
-CMD ["python", "test_cases/test_dynamic/generate_docker_compose.py"]
-CMD ["python", "main/start_test.py", "test_dynamic"]
+CMD ["python", "main/start_test.py", "test_local_matches"]
 
 #Probably not needed when requirements are in test_cases

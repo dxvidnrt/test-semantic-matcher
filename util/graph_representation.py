@@ -22,6 +22,14 @@ def show_graph(directory, image_path):
                     match_source = match["meta_information"]["matchSource"]
                     # Add edge from base_semantic_id to match_semantic_id with the score as weight
                     G.add_edge(base_semantic_id, match_semantic_id, score=score, matchSource=match_source)
+                    for semantic_id in [base_semantic_id, match_semantic_id]:
+                        if G.has_node(match_semantic_id):
+                            if "matchSource" in G.nodes[semantic_id]:
+                                G.nodes[semantic_id]["matchSource"].add(match_source)
+                            else:
+                                G.nodes[semantic_id]["matchSource"] = set(match_source)
+                        else:
+                            G.add_node(semantic_id, matchSource=set(match_source))
 
     # Modify the label of each node
     node_labels = {node: node.split("/")[-1] for node in G.nodes()}  # Use only the last part of the ID
@@ -33,11 +41,11 @@ def show_graph(directory, image_path):
 
     # Assign a color to each group
     unique_groups = list(set(groups.values()))
-    color_map = {group: plt.cm.tab20(i / len(unique_groups)) for i, group in enumerate(unique_groups)}
+    color_map = {group: plt.cm.tab20(i % 20) for i, group in enumerate(unique_groups)}  # Adjusted to use mod 20 for cycling colors
     node_colors = [color_map[groups[node]] for node in G.nodes()]
 
     # Draw the graph
-    pos = nx.spring_layout(G, seed=42)  # Positions nodes using Fruchterman-Reingold force-directed algorithm
+    pos = nx.spring_layout(G, seed=42)
     nx.draw_networkx_nodes(G, pos, node_size=200, node_color=node_colors)
     nx.draw_networkx_edges(G, pos, width=1.0, alpha=0.5, edge_color="gray")
     nx.draw_networkx_labels(G, pos, labels=node_labels, font_size=8)
@@ -62,39 +70,45 @@ def show_graph(directory, image_path):
         match_sources[match_source].update([u, v])
 
     # Draw convex hulls around nodes with the same matchSource
-    for match_source, nodes in match_sources.items():
+    hull_color_map = plt.cm.get_cmap('tab10', len(match_sources))
+    for idx, (match_source, nodes) in enumerate(match_sources.items()):
         if len(nodes) > 2:  # Convex hull requires at least 3 points
             points = np.array([pos[node] for node in nodes])
             hull = ConvexHull(points)
             hull_points = points[hull.vertices]
-            polygon = plt.Polygon(hull_points, fill=True, edgecolor=None, alpha=0.3)
+            centroid = np.mean(hull_points, axis=0)
+            enlarged_hull_points = centroid + 1.1 * (hull_points - centroid)  # Scale points outward from the centroid
+            polygon = plt.Polygon(enlarged_hull_points, fill=True, edgecolor=None, alpha=0.3, facecolor=hull_color_map(idx))
             plt.gca().add_patch(polygon)
             # Add matchSource label at the centroid of the hull
-            centroid = np.mean(hull_points, axis=0)
             plt.text(centroid[0], centroid[1], match_source, horizontalalignment='center', verticalalignment='center',
                      fontsize=8, bbox=dict(facecolor='white', alpha=0.5))
         elif len(nodes) == 2:  # Special case for two points
             points = np.array([pos[node] for node in nodes])
-            # Calculate the midpoint and create a small rectangle around the line
-            midpoint = np.mean(points, axis=0)
+            # Calculate the midpoint and create a larger rectangle around the line
+            node_radius = 0.035
             vector = points[1] - points[0]
+            vector_node_radius = vector / np.linalg.norm(vector) * 2 * node_radius
             perp_vector = np.array([-vector[1], vector[0]])
-            perp_vector = perp_vector / np.linalg.norm(perp_vector) * 0.01  # Adjust the scale as needed
-            rectangle = np.array([points[0] + perp_vector, points[1] + perp_vector,
-                                  points[1] - perp_vector, points[0] - perp_vector])
-            polygon = plt.Polygon(rectangle, fill=True, edgecolor=None, alpha=0.3)
+            perp_vector = perp_vector / np.linalg.norm(perp_vector) * 0.05  # Adjust the scale as needed
+            rectangle = np.array([points[0] + perp_vector - vector_node_radius,
+                                  points[1] + perp_vector + vector_node_radius,
+                                  points[1] - perp_vector + vector_node_radius,
+                                  points[0] - perp_vector - vector_node_radius])
+            polygon = plt.Polygon(rectangle, fill=True, edgecolor=None, alpha=0.3, facecolor=hull_color_map(idx))
             plt.gca().add_patch(polygon)
             # Add matchSource label at the midpoint of the line
+            midpoint = np.mean(points, axis=0)
             plt.text(midpoint[0], midpoint[1], match_source, horizontalalignment='center', verticalalignment='center',
                      fontsize=8, bbox=dict(facecolor='white', alpha=0.5))
         elif len(nodes) == 1:  # Special case for a single node
             node = next(iter(nodes))
             point = pos[node]
-            circle = plt.Circle(point, radius=0.05, edgecolor=None, fill=True,
-                                alpha=0.3)
+            circle = plt.Circle(point, radius=0.1, edgecolor=None, fill=True,
+                                alpha=0.3, facecolor=hull_color_map(idx))  # Adjusted the radius to be larger
             plt.gca().add_patch(circle)
             # Add matchSource label next to the node
-            plt.text(point[0], point[1] + 0.06, match_source, horizontalalignment='center', verticalalignment='center',
+            plt.text(point[0], point[1] + 0.12, match_source, horizontalalignment='center', verticalalignment='center',
                      fontsize=8, bbox=dict(facecolor='white', alpha=0.5))
 
     # Create legend
