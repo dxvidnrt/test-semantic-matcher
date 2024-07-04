@@ -6,7 +6,7 @@ import matplotlib.patches as mpatches
 
 
 def show_graph(directory, image_path):
-    G = nx.DiGraph()
+    G = nx.MultiDiGraph()
 
     # Iterate over all JSON files in the directory
     for filename in os.listdir(directory):
@@ -39,7 +39,16 @@ def show_graph(directory, image_path):
     nx.draw_networkx_nodes(G, pos, node_size=200, node_color=node_colors)
     nx.draw_networkx_edges(G, pos, width=1.0, alpha=0.5, edge_color="gray")
     nx.draw_networkx_labels(G, pos, labels=node_labels, font_size=8)
-    edge_labels = {(u, v): d['score'] for u, v, d in G.edges(data=True)}
+
+    # Draw edge labels for MultiDiGraph
+    edge_labels = {}
+    for u, v, key, data in G.edges(data=True, keys=True):
+        if (u, v) in edge_labels:
+            edge_labels[(u, v)].append(f"{key}: {data['score']}")
+        else:
+            edge_labels[(u, v)] = [f"{key}: {data['score']}"]
+
+    edge_labels = {key: '\n'.join(value) for key, value in edge_labels.items()}
     nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=6)
 
     # Create legend
@@ -50,8 +59,4 @@ def show_graph(directory, image_path):
     plt.axis("off")
 
     plt.savefig(f'{image_path}/graph.png')
-
     plt.show()
-
-# If you want to main this function in the same file, you can call it like this:
-# show_graph_all_sms('../data/SMS')
