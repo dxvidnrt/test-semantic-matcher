@@ -3,7 +3,8 @@ import os
 import networkx as nx
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
-
+from scipy.spatial import ConvexHull
+import numpy as np
 
 def show_graph(directory, image_path):
     G = nx.MultiDiGraph()
@@ -18,8 +19,9 @@ def show_graph(directory, image_path):
                     base_semantic_id = match["base_semantic_id"]
                     match_semantic_id = match["match_semantic_id"]
                     score = match["score"]
+                    match_source = match["meta_information"]["matchSource"]
                     # Add edge from base_semantic_id to match_semantic_id with the score as weight
-                    G.add_edge(base_semantic_id, match_semantic_id, score=score)
+                    G.add_edge(base_semantic_id, match_semantic_id, score=score, matchSource=match_source)
 
     # Modify the label of each node
     node_labels = {node: node.split("/")[-1] for node in G.nodes()}  # Use only the last part of the ID
@@ -51,12 +53,65 @@ def show_graph(directory, image_path):
     edge_labels = {key: '\n'.join(value) for key, value in edge_labels.items()}
     nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=6)
 
+    # Get the matchSource for each edge and use it to group nodes
+    match_sources = {}
+    for u, v, data in G.edges(data=True):
+        match_source = data["matchSource"]
+        if match_source not in match_sources:
+            match_sources[match_source] = set()
+        match_sources[match_source].update([u, v])
+
+    # Draw convex hulls around nodes with the same matchSource
+    for match_source, nodes in match_sources.items():
+        if len(nodes) > 2:  # Convex hull requires at least 3 points
+            points = np.array([pos[node] for node in nodes])
+            hull = ConvexHull(points)
+            hull_points = points[hull.vertices]
+            polygon = plt.Polygon(hull_points, fill=True, edgecolor=None, alpha=0.3)
+            plt.gca().add_patch(polygon)
+            # Add matchSource label at the centroid of the hull
+            centroid = np.mean(hull_points, axis=0)
+            plt.text(centroid[0], centroid[1], match_source, horizontalalignment='center', verticalalignment='center',
+                     fontsize=8, bbox=dict(facecolor='white', alpha=0.5))
+        elif len(nodes) == 2:  # Special case for two points
+            points = np.array([pos[node] for node in nodes])
+            # Calculate the midpoint and create a small rectangle around the line
+            midpoint = np.mean(points, axis=0)
+            vector = points[1] - points[0]
+            perp_vector = np.array([-vector[1], vector[0]])
+            perp_vector = perp_vector / np.linalg.norm(perp_vector) * 0.01  # Adjust the scale as needed
+            rectangle = np.array([points[0] + perp_vector, points[1] + perp_vector,
+                                  points[1] - perp_vector, points[0] - perp_vector])
+            polygon = plt.Polygon(rectangle, fill=True, edgecolor=None, alpha=0.3)
+            plt.gca().add_patch(polygon)
+            # Add matchSource label at the midpoint of the line
+            plt.text(midpoint[0], midpoint[1], match_source, horizontalalignment='center', verticalalignment='center',
+                     fontsize=8, bbox=dict(facecolor='white', alpha=0.5))
+        elif len(nodes) == 1:  # Special case for a single node
+            node = next(iter(nodes))
+            point = pos[node]
+            circle = plt.Circle(point, radius=0.05, edgecolor=None, fill=True,
+                                alpha=0.3)
+            plt.gca().add_patch(circle)
+            # Add matchSource label next to the node
+            plt.text(point[0], point[1] + 0.06, match_source, horizontalalignment='center', verticalalignment='center',
+                     fontsize=8, bbox=dict(facecolor='white', alpha=0.5))
+
     # Create legend
     legend_handles = [mpatches.Patch(color=color_map[group], label=group) for group in unique_groups]
-    plt.legend(handles=legend_handles, title="Groups", loc="best")
+    plt.legend(handles=legend_handles, title="UML", loc="best")
 
     plt.title("Semantic ID Graph")
     plt.axis("off")
 
     plt.savefig(f'{image_path}/graph.png')
     plt.show()
+
+def main():
+    data_path = os.path.join('./')
+    image_path = os.path.join('./images')
+    os.makedirs(image_path, exist_ok=True)  # Ensure the image directory exists
+    show_graph(data_path, image_path)
+
+if __name__ == "__main__":
+    main()
