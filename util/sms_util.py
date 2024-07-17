@@ -6,13 +6,6 @@ import os
 from util import json_util
 
 
-def clear_all_sms(config):
-    if 'ENDPOINTS' in config:
-        for sms, endpoint in config["ENDPOINTS"].items():
-            url = f'{endpoint}/clear'
-            response = requests.post(url)
-
-
 def get_all_sms(config):
     """
     Get all SMS stored in config and save graph as json in data folder.
