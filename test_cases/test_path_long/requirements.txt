@@ -1,0 +1,9 @@
+requests>=2.31.0
+pydantic>=1.10
+git+https://github.com/dxvidnrt/python-semantic-matcher
+git+https://github.com/dxvidnrt/semantic_id_resolver
+networkx
+scipy
+matplotlib
+fastapi>=0.95.0
+uvicorn>=0.21.1

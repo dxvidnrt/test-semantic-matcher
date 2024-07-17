@@ -15,27 +15,21 @@ class Test(TestModel):
             base_semantic_id='sms1/semanticID/Dog',
             match_semantic_id='sms2/semanticID/Cat',
             score=0.7,
-            meta_information={'matchSource': 'Defined by David Niebert'}
+            meta_information={'matchSource': '1'}
         )
         match_2 = model.SemanticMatch(
             base_semantic_id='sms1/semanticID/Dog',
-            match_semantic_id='sms3/semanticID/Dog',
-            score=1,
-            meta_information={'matchSource': 'Defined by David Niebert'}
-        )
-        match_3 = model.SemanticMatch(
-            base_semantic_id='sms3/semanticID/Dog',
             match_semantic_id='sms2/semanticID/Cat',
             score=0.8,
-            meta_information={'matchSource': 'Defined by David Niebert'}
+            meta_information={'matchSource': '2'}
         )
-        match_4 = model.SemanticMatch(
+        match_3 = model.SemanticMatch(
             base_semantic_id='sms2/semanticID/Cat',
             match_semantic_id='sms4/semanticID/Bird',
             score=0.5,
-            meta_information={'matchSource': 'Defined by David Niebert'}
+            meta_information={'matchSource': '1'}
         )
-        matches = [match_1, match_2, match_4, match_3]
+        matches = [match_1, match_2, match_3]
         json_util.save_as_json(self.test_json_path, matches)
         self.match_request = service_model.MatchRequest(
             semantic_id='sms1/semanticID/Dog',

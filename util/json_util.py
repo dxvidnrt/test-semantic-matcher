@@ -1,6 +1,5 @@
 import json
 import os
-from collections import Counter
 
 from semantic_matcher.model import SemanticMatch, EquivalenceTable
 from semantic_matcher.service_model import MatchRequest
@@ -115,6 +114,8 @@ def check_matches(data_path):
     retrieved_matches_path = os.path.join(data_path, 'test', 'retrieved_matches.json')
     expected_matches_path = os.path.join(data_path, 'test', 'expected_matches.json')
     expected_minimal_matches_path = os.path.join(data_path, 'test', 'minimal_matches.json')
+    if not os.path.isfile(retrieved_matches_path):
+        return False
     if os.path.isfile(expected_matches_path):
         if not load_matches(retrieved_matches_path) == load_matches(expected_matches_path):
             return False

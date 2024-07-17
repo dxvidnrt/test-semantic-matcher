@@ -146,7 +146,7 @@ def wait_for_services(test_dir, log_file):
                 if not line:
                     break
                 line = line.strip()
-                f.write('wait_for_service:' + line + '\n')  # Write each line to the log file
+                f.write(line + '\n')  # Write each line to the log file
                 f.flush()  # Ensure the line is written immediately
 
                 # Periodically check if the container has exited
@@ -194,7 +194,7 @@ def main():
         log_path = os.path.join(log_datetime_dir, f'{test_dir}.log')
         data_path = os.path.join(full_test_dir, 'data')
         if os.path.isdir(full_test_dir) and test_dir.startswith('test_'):
-            shutil.rmtree(data_path)
+            shutil.rmtree(data_path, ignore_errors=True)
             stop_and_cleanup(full_test_dir, log_path)
             start_docker_compose(full_test_dir, log_path)
             wait_for_services(full_test_dir, log_path)

@@ -33,6 +33,9 @@ class TestModel(ABC):
         self.match_request = None
         self.name = name
 
+        self.check_sms = True
+        self.timeout = 30
+
         self.sms = None
         if 'ENDPOINTS' in self.config:
             self.sms = [sms for sms, endpoint in self.config["ENDPOINTS"].items()]
@@ -51,14 +54,20 @@ class TestModel(ABC):
         sms_util.post_test_case(self.test_json_path, self.config)
 
     def evaluate(self):
+        print("Start Evaluation...")
         sms_util.get_all_sms(self.config)
         graph_representation.show_graph(self.data_SMS_path, self.data_image_path)
-        if not json_util.check_sms(self.data_path):
+        if self.check_sms and not json_util.check_sms(self.data_path):
             raise AssertionError("SMS are not correct")
+
+        print("SMS are correct")
 
         if self.match_request is None:
             print("There is no match request to check.")
+
         else:
+            print(f"Evaluating Match Request {self.match_request}")
+
             sms_request = resolver_service.SMSRequest(semantic_id=self.match_request.semantic_id)
             resolver_endpoint = self.config['RESOLVER']['endpoint']
             resolver_port = self.config['RESOLVER']['port']
@@ -66,7 +75,9 @@ class TestModel(ABC):
                                     json=sms_request.dict())
             response_json = response.json()
             endpoint = response_json['semantic_matching_service_endpoint']
-            sms_util.get_matches_sms(self.match_request, endpoint, self.retrieved_matches_path, self.config)
+            if not sms_util.get_matches_sms(self.match_request, endpoint, self.retrieved_matches_path, self.config,
+                                            self.timeout):
+                print("There was a timeout error requesting matches")
             if not json_util.check_matches(self.data_path):
                 raise AssertionError(f"{self.name} failed")
         print(f"{self.name} worked correctly")

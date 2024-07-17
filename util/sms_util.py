@@ -42,13 +42,17 @@ def clear_all_sms(config):
             response = requests.post(url)
 
 
-def get_matches_sms(match_request, endpoint, path, config):
+def get_matches_sms(match_request, endpoint, path, config, timeout):
     page = config['SMS']['url_get']
     url = f'{endpoint}/{page}'
-    response = requests.get(url, json=match_request.dict())
+    try:
+        response = requests.get(url, json=match_request.dict(), timeout=timeout)
+    except requests.exceptions.Timeout:
+        return False
     response_json = response.json()
     matches_list = response_json["matches"]
     json_util.save_as_json(path, matches_list)
+    return True
 
 
 def post_test_case(file_path, config):

@@ -42,6 +42,7 @@ services:
     ports:
     - 8002:8012
   python-semantic-matcher_4:
+    image: local/python-semantic-matcher
     build:
       context: https://github.com/dxvidnrt/python-semantic-matcher.git
     healthcheck:

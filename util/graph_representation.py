@@ -47,8 +47,8 @@ def show_graph(directory, image_path):
     # Draw the graph
     pos = nx.spring_layout(G, seed=42)
     nx.draw_networkx_nodes(G, pos, node_size=200, node_color=node_colors)
-    nx.draw_networkx_edges(G, pos, width=1.0, alpha=0.5, edge_color="gray")
-    nx.draw_networkx_labels(G, pos, labels=node_labels, font_size=8)
+    nx.draw_networkx_edges(G, pos, width=1.0, alpha=0.8, edge_color="black")
+    nx.draw_networkx_labels(G, pos, labels=node_labels, font_size=12)
 
     # Draw edge labels for MultiDiGraph
     edge_labels = {}
@@ -56,7 +56,7 @@ def show_graph(directory, image_path):
         if (u, v) in edge_labels:
             edge_labels[(u, v)].append(f"{key}: {data['score']}")
         else:
-            edge_labels[(u, v)] = [f"{key}: {data['score']}"]
+            edge_labels[(u, v)] = [str(data['score'])]
 
     edge_labels = {key: '\n'.join(value) for key, value in edge_labels.items()}
     nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=6)
@@ -78,7 +78,7 @@ def show_graph(directory, image_path):
             hull_points = points[hull.vertices]
             centroid = np.mean(hull_points, axis=0)
             enlarged_hull_points = centroid + 1.1 * (hull_points - centroid)  # Scale points outward from the centroid
-            polygon = plt.Polygon(enlarged_hull_points, fill=True, edgecolor=None, alpha=0.3, facecolor=hull_color_map(idx))
+            polygon = plt.Polygon(enlarged_hull_points, fill=True, edgecolor=None, alpha=0.15, facecolor=hull_color_map(idx))
             plt.gca().add_patch(polygon)
             # Add matchSource label at the centroid of the hull
             plt.text(centroid[0], centroid[1], match_source, horizontalalignment='center', verticalalignment='center',
@@ -95,17 +95,19 @@ def show_graph(directory, image_path):
                                   points[1] + perp_vector + vector_node_radius,
                                   points[1] - perp_vector + vector_node_radius,
                                   points[0] - perp_vector - vector_node_radius])
-            polygon = plt.Polygon(rectangle, fill=True, edgecolor=None, alpha=0.3, facecolor=hull_color_map(idx))
+            polygon = plt.Polygon(rectangle, fill=True, edgecolor=None, alpha=0.15, facecolor=hull_color_map(idx))
             plt.gca().add_patch(polygon)
-            # Add matchSource label at the midpoint of the line
+            # Add matchSource label above the area
             midpoint = np.mean(points, axis=0)
-            plt.text(midpoint[0], midpoint[1], match_source, horizontalalignment='center', verticalalignment='center',
+            above_point = midpoint + np.array([0, 0.1])  # Shift the label above the midpoint
+            plt.text(above_point[0], above_point[1], match_source, horizontalalignment='center',
+                     verticalalignment='center',
                      fontsize=8, bbox=dict(facecolor='white', alpha=0.5))
         elif len(nodes) == 1:  # Special case for a single node
             node = next(iter(nodes))
             point = pos[node]
             circle = plt.Circle(point, radius=0.1, edgecolor=None, fill=True,
-                                alpha=0.3, facecolor=hull_color_map(idx))  # Adjusted the radius to be larger
+                                alpha=0.15, facecolor=hull_color_map(idx))  # Adjusted the radius to be larger
             plt.gca().add_patch(circle)
             # Add matchSource label next to the node
             plt.text(point[0], point[1] + 0.12, match_source, horizontalalignment='center', verticalalignment='center',
