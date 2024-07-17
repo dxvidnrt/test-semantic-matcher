@@ -70,6 +70,8 @@ def show_graph(directory, image_path):
         match_sources[match_source].update([u, v])
 
     # Draw convex hulls around nodes with the same matchSource
+    handles = []
+    labels = []
     hull_color_map = plt.cm.get_cmap('tab10', len(match_sources))
     for idx, (match_source, nodes) in enumerate(match_sources.items()):
         if len(nodes) > 2:  # Convex hull requires at least 3 points
@@ -80,6 +82,8 @@ def show_graph(directory, image_path):
             enlarged_hull_points = centroid + 1.1 * (hull_points - centroid)  # Scale points outward from the centroid
             polygon = plt.Polygon(enlarged_hull_points, fill=True, edgecolor=None, alpha=0.15, facecolor=hull_color_map(idx))
             plt.gca().add_patch(polygon)
+            handles.append(polygon)
+            labels.append(match_source)
             # Add matchSource label at the centroid of the hull
             plt.text(centroid[0], centroid[1], match_source, horizontalalignment='center', verticalalignment='center',
                      fontsize=8, bbox=dict(facecolor='white', alpha=0.5))
@@ -97,6 +101,8 @@ def show_graph(directory, image_path):
                                   points[0] - perp_vector - vector_node_radius])
             polygon = plt.Polygon(rectangle, fill=True, edgecolor=None, alpha=0.15, facecolor=hull_color_map(idx))
             plt.gca().add_patch(polygon)
+            handles.append(polygon)
+            labels.append(match_source)
             # Add matchSource label above the area
             midpoint = np.mean(points, axis=0)
             above_point = midpoint + np.array([0, 0.1])  # Shift the label above the midpoint
@@ -109,15 +115,22 @@ def show_graph(directory, image_path):
             circle = plt.Circle(point, radius=0.1, edgecolor=None, fill=True,
                                 alpha=0.15, facecolor=hull_color_map(idx))  # Adjusted the radius to be larger
             plt.gca().add_patch(circle)
+            handles.append(circle)
+            labels.append(match_source)
             # Add matchSource label next to the node
             plt.text(point[0], point[1] + 0.12, match_source, horizontalalignment='center', verticalalignment='center',
                      fontsize=8, bbox=dict(facecolor='white', alpha=0.5))
 
     # Create legend
     legend_handles = [mpatches.Patch(color=color_map[group], label=group) for group in unique_groups]
-    plt.legend(handles=legend_handles, title="UML", loc="best")
+    uml_legend = plt.legend(handles=legend_handles, title="UML", loc="upper center", bbox_to_anchor=(0.5, 1.1))
+    match_source_legend = plt.legend(handles, labels, title="Match Source", loc='upper right',
+                                     bbox_to_anchor=(1.15, 1.1))
 
-    plt.title("Semantic ID Graph")
+    plt.gca().add_artist(uml_legend)
+    plt.gca().add_artist(match_source_legend)
+
+    plt.title("Semantic ID Graph", loc="left")
     plt.axis("off")
 
     plt.savefig(f'{image_path}/graph.png')
