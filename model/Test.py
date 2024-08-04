@@ -54,13 +54,11 @@ class TestModel(ABC):
         sms_util.post_test_case(self.test_json_path, self.config)
 
     def evaluate(self):
-        print("Start Evaluation...")
-        sms_util.get_all_sms(self.config)
-        graph_representation.show_graph(self.data_SMS_path, self.data_image_path)
-        if self.check_sms and not json_util.check_sms(self.data_path):
-            raise AssertionError("SMS are not correct")
-
-        print("SMS are correct")
+        if self.check_sms:
+            sms_util.get_all_sms(self.config)
+            graph_representation.show_graph(self.data_SMS_path, self.data_image_path)
+            if not json_util.check_sms(self.data_path):
+                raise AssertionError("SMS are not correct")
 
         if self.match_request is None:
             print("There is no match request to check.")

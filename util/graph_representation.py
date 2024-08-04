@@ -123,12 +123,11 @@ def show_graph(directory, image_path):
 
     # Create legend
     legend_handles = [mpatches.Patch(color=color_map[group], label=group) for group in unique_groups]
-    uml_legend = plt.legend(handles=legend_handles, title="UML", loc="upper center", bbox_to_anchor=(0.5, 1.1))
-    match_source_legend = plt.legend(handles, labels, title="Match Source", loc='upper right',
-                                     bbox_to_anchor=(1.15, 1.1))
+    uml_legend = plt.legend(handles=legend_handles, title="UML", loc="best")
+    # match_source_legend = plt.legend(handles, labels, title="Match Source", loc='lower left')
 
     plt.gca().add_artist(uml_legend)
-    plt.gca().add_artist(match_source_legend)
+    # plt.gca().add_artist(match_source_legend)
 
     plt.title("Semantic ID Graph", loc="left")
     plt.axis("off")

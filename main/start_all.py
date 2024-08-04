@@ -8,6 +8,12 @@ import shutil
 
 
 def start_docker_compose(test_dir, log_file):
+    """
+    Start the docker-compose file in the test directory. Write all logs into log file.
+    :param test_dir:
+    :param log_file:
+    :return:
+    """
     try:
         # Open the log file for appending
         with open(log_file, 'a') as f:
@@ -55,6 +61,12 @@ def clone_repos():
 
 
 def stop_and_cleanup(test_dir, log_file):
+    """
+    Stop and Remove all services
+    :param test_dir:
+    :param log_file:
+    :return:
+    """
     try:
         with open(log_file, 'a') as f:
             subprocess.run(['docker-compose', 'down', '-v'], check=True, cwd=test_dir, stdout=f,
@@ -64,6 +76,13 @@ def stop_and_cleanup(test_dir, log_file):
 
 
 def wait_for_services(test_dir, log_file):
+    """
+    Run while services are active. Search for container matching pattern 'test-semantic-matcher' and check its status.
+    If status is EXITED, stop waiting.
+    :param test_dir:
+    :param log_file:
+    :return:
+    """
 
     def get_container_exit_code(container_id):
         result = subprocess.run(['docker', 'inspect', '--format', '{{.State.ExitCode}}', container_id],

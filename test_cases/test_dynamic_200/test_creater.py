@@ -14,10 +14,9 @@ class Test(TestModel):
         self.start_server_name = None
 
     def create(self):
-        number_semantic_ids = random.randint(8, 12)
+        number_semantic_ids = random.randint(190, 210)
 
         matches_list = []
-        expected_matches = []
         minimal_matches = []
         last_match_semantic_id = f'{self.get_random_sms()}/semanticID/0'
         self.start_server_name = last_match_semantic_id
@@ -27,16 +26,14 @@ class Test(TestModel):
                 base_semantic_id=last_match_semantic_id,
                 match_semantic_id=match_semantic_id,
                 score=1,
-                meta_information={'matchSource': "Simple Source"}
+                meta_information={'matchSource': self.get_random_sms()}
             )
             matches_list.append(match_i)
-            expected_matches.append(match_i)
-            if i % 2 == 0:
+            if i == number_semantic_ids - 1:
                 minimal_matches.append(match_i)
             last_match_semantic_id = match_semantic_id
 
         json_util.save_as_json(self.test_json_path, matches_list)
-        json_util.save_as_json(self.expected_matches_path, expected_matches)
         json_util.save_as_json(self.expected_minimal_matches_path, minimal_matches)
 
         self.match_request = service_model.MatchRequest(
@@ -44,3 +41,5 @@ class Test(TestModel):
             score_limit=0,
             local_only=False
         )
+
+        self.check_sms = False

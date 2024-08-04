@@ -13,4 +13,5 @@ url_get_all = all_matches
 
 [ENDPOINTS]
 sms1 = http://python-semantic-matcher_1:8000
+sms2 = http://python-semantic-matcher_2:8000
 

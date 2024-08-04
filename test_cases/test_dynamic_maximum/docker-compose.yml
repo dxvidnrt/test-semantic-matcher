@@ -4,7 +4,7 @@ networks:
 services:
   python-semantic-matcher_1:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/dxvidnrt/python-semantic-matcher.git#TestRecursionDepth
     healthcheck:
       interval: 10s
       retries: 5
@@ -15,7 +15,6 @@ services:
     - semantic_network
     ports:
     - 8000:8010
-
   semantic_id_resolver:
     build:
       context: https://github.com/dxvidnrt/semantic_id_resolver.git
