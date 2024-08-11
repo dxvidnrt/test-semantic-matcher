@@ -19,14 +19,6 @@ def main():
     path_to_test_i = os.path.join('../test_cases', arg1)
     sys.path.insert(0, path_to_test_i)
 
-    # Check if docker-compose can be generated dynamically
-    generate_docker_compose_path = os.path.join(path_to_test_i, 'generate_docker_compose.py')
-    if os.path.isfile(generate_docker_compose_path):
-        try:
-            subprocess.run(['python', generate_docker_compose_path], check=True)
-        except subprocess.CalledProcessError as e:
-            print(f"Error: {e}")
-
     # Import the module dynamically
     try:
         test_creater = importlib.import_module(module_name, package=path_to_test_i)
