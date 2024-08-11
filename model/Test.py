@@ -1,4 +1,3 @@
-import shutil
 from abc import ABC, abstractmethod
 import os
 import configparser
@@ -41,7 +40,6 @@ class TestModel(ABC):
             self.sms = [sms for sms, endpoint in self.config["ENDPOINTS"].items()]
 
         sms_util.clear_all_sms(self.config)
-
 
     @abstractmethod
     def create(self):

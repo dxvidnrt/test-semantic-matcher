@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  semantic_id_resolver:
+    image: local/semantic_id_resolver
+    build:
+      context: https://github.com/dxvidnrt/semantic_id_resolver.git
+    ports:
+      - "8125:8015"
+    networks:
+      - semantic_network
+    depends_on:
+      - python-semantic-matcher_1
+
+  python-semantic-matcher_1:
+    image: local/python-semantic-matcher
+    build:
+      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+    ports:
+      - "8000:8010"
+    networks:
+      - semantic_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://python-semantic-matcher_1:8000"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  test-semantic-matcher:
+    build:
+      context: .
+    ports:
+      - "8100:8019"
+    networks:
+      - semantic_network
+    volumes:
+      - ./data:/app/data
+      - ../../../main:/app/main
+      - ../../../util:/app/util
+      - ../../../model:/app/model
+    depends_on:
+      - python-semantic-matcher_1
+
+networks:
+  semantic_network:
+    driver: bridge

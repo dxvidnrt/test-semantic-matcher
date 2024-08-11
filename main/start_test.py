@@ -1,9 +1,7 @@
 import sys
-import os
 import re
 import importlib
 from model import Test
-import subprocess
 
 
 def main():
@@ -15,13 +13,9 @@ def main():
     # Construct the module name dynamically
     module_name = "test_creater"
 
-    # Add the directory containing the test case to sys.path
-    path_to_test_i = os.path.join('../test_cases', arg1)
-    sys.path.insert(0, path_to_test_i)
-
     # Import the module dynamically
     try:
-        test_creater = importlib.import_module(module_name, package=path_to_test_i)
+        test_creater = importlib.import_module(module_name)
     except ModuleNotFoundError:
         raise ImportError(f"Failed to import module '{module_name}'")
     test: Test = test_creater.Test(arg1)
