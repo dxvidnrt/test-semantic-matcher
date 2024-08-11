@@ -208,16 +208,36 @@ def main():
     os.makedirs(log_datetime_dir)
     clone_repos()
 
-    for test_dir in sorted(os.listdir(tests_dir)):
-        full_test_dir = os.path.join(tests_dir, test_dir)
-        log_path = os.path.join(log_datetime_dir, f'{test_dir}.log')
-        data_path = os.path.join(full_test_dir, 'data')
-        if os.path.isdir(full_test_dir) and test_dir.startswith('test_'):
+    def start_testcase(cur_tests_dir, cur_test_dir):
+        log_path = os.path.join(log_datetime_dir, f'{cur_test_dir}.log')
+        data_path = os.path.join(cur_tests_dir, 'data')
+        if os.path.isdir(cur_tests_dir) and cur_test_dir.startswith('test_'):
             shutil.rmtree(data_path, ignore_errors=True)
-            stop_and_cleanup(full_test_dir, log_path)
-            start_docker_compose(full_test_dir, log_path)
-            wait_for_services(full_test_dir, log_path)
-            stop_and_cleanup(full_test_dir, log_path)
+            stop_and_cleanup(cur_tests_dir, log_path)
+            start_docker_compose(cur_tests_dir, log_path)
+            wait_for_services(cur_tests_dir, log_path)
+            stop_and_cleanup(cur_tests_dir, log_path)
+
+    for test_dir in sorted(os.listdir(tests_dir)):
+        cur_location = os.path.join(tests_dir, test_dir)
+
+        # Check if it's a directory
+        if os.path.isdir(cur_location):
+            # Check if directory name starts with 'test_'
+            if test_dir.startswith('test_'):
+                print(f"Processing test directory: {cur_location}")
+                start_testcase(cur_location, test_dir)
+
+            # Check if directory name starts with 'class_'
+            elif test_dir.startswith('class_'):
+                print(f"Processing class directory: {cur_location}")
+                for test_sub_dir in sorted(os.listdir(cur_location)):
+                    sub_location = os.path.join(cur_location, test_sub_dir)
+                    if os.path.isdir(sub_location):
+                        print(f"Processing subdirectory: {sub_location}")
+                        start_testcase(sub_location, test_sub_dir)
+            else:
+                print(f"Error occurred while handling {test_dir}")
 
 
 if __name__ == "__main__":
