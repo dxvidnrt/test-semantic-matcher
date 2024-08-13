@@ -6,12 +6,12 @@ import matplotlib.patches as mpatches
 from scipy.spatial import ConvexHull
 import numpy as np
 
-
-show_source_name = True
+show_source_name = False
 show_source_overlay = False
-show_source_legend = True
+show_source_legend = False
 
-show_UML_legend = False
+show_UML_legend = True
+
 
 def show_graph(directory, image_path):
     G = nx.MultiDiGraph()
@@ -25,7 +25,7 @@ def show_graph(directory, image_path):
                 for match in matches:
                     base_semantic_id = match["base_semantic_id"]
                     match_semantic_id = match["match_semantic_id"]
-                    score = match["score"]
+                    score = round(match["score"], 2)
                     match_source = match["meta_information"]["matchSource"]
                     # Add edge from base_semantic_id to match_semantic_id with the score as weight
                     G.add_edge(base_semantic_id, match_semantic_id, score=score, matchSource=match_source)
@@ -107,7 +107,8 @@ def show_graph(directory, image_path):
                 labels.append(match_source)
             # Add matchSource label at the centroid of the hull
             if show_source_name:
-                plt.text(centroid[0], centroid[1], match_source, horizontalalignment='center', verticalalignment='center',
+                plt.text(centroid[0], centroid[1], match_source, horizontalalignment='center',
+                         verticalalignment='center',
                          fontsize=8, bbox=dict(facecolor='white', alpha=0.5))
         elif len(nodes) == 2:  # Special case for two points
             points = np.array([pos[node] for node in nodes])
@@ -144,7 +145,8 @@ def show_graph(directory, image_path):
                 labels.append(match_source)
             # Add matchSource label next to the node
             if show_source_name:
-                plt.text(point[0], point[1] + 0.12, match_source, horizontalalignment='center', verticalalignment='center',
+                plt.text(point[0], point[1] + 0.12, match_source, horizontalalignment='center',
+                         verticalalignment='center',
                          fontsize=8, bbox=dict(facecolor='white', alpha=0.5))
 
     # Create legend
@@ -157,7 +159,6 @@ def show_graph(directory, image_path):
     if show_source_legend:
         match_source_legend = plt.legend(handles, labels, title="Match Source", loc="best")
         plt.gca().add_artist(match_source_legend)
-
 
     plt.title("Semantic ID Graph", loc="left")
     plt.axis("off")
