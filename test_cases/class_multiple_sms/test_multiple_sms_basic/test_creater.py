@@ -6,14 +6,14 @@ from util import json_util
 class Test(TestModel):
     def create(self):
         match_1 = model.SemanticMatch(
-            base_semantic_id='SMS1/SemanticID/1',
-            match_semantic_id='SMS2/SemanticID/2',
+            base_semantic_id='sms1/SemanticID/1',
+            match_semantic_id='sms2/SemanticID/2',
             score=1,
             meta_information={'matchSource': '1'}
         )
         match_2 = model.SemanticMatch(
-            base_semantic_id='SMS2/SemanticID/2',
-            match_semantic_id='SMS2/SemanticID/3',
+            base_semantic_id='sms2/SemanticID/2',
+            match_semantic_id='sms2/SemanticID/3',
             score=1,
             meta_information={'matchSource': '1'}
         )
@@ -21,7 +21,7 @@ class Test(TestModel):
         json_util.save_as_json(self.expected_minimal_matches_path, [match_2])
 
         self.match_request = service_model.MatchRequest(
-            semantic_id='SMS1/SemanticID/1',
+            semantic_id='sms1/SemanticID/1',
             score_limit=0,
             local_only=False
         )

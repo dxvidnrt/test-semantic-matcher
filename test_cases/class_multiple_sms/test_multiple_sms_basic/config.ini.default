@@ -12,5 +12,5 @@ url_post=post_matches
 url_get_all=all_matches
 
 [ENDPOINTS]
-SMS1=http://python-semantic-matcher_1:8000
-SMS2=http://python-semantic-matcher_2:8000
+sms1=http://python-semantic-matcher_1:8000
+sms2=http://python-semantic-matcher_2:8000
