@@ -5,6 +5,7 @@ import time
 import re
 import json
 import shutil
+import sys
 
 
 def start_docker_compose(test_dir, log_file):
@@ -196,6 +197,22 @@ def wait_for_services(test_dir, log_file):
             f.flush()
 
 
+def generate_docker_compose(test_dir):
+    generate_file_path = os.path.join(test_dir, 'generate_docker_compose.py')
+    if os.path.isfile(generate_file_path):
+        result = subprocess.run(
+            [sys.executable, generate_file_path],  # Command to run
+            cwd=test_dir,  # Change working directory
+            capture_output=True,  # Capture standard output and error
+            text=True  # Output as text instead of bytes
+        )
+
+        if result.returncode == 0:
+            print("Script output:\n", result.stdout)
+        else:
+            print("Script error:\n", result.stderr)
+
+
 def main():
     root_dir = os.path.dirname(os.path.abspath(__file__))
     tests_dir = os.path.join(root_dir, '../test_cases')
@@ -214,6 +231,7 @@ def main():
         if os.path.isdir(cur_tests_dir) and cur_test_dir.startswith('test_'):
             shutil.rmtree(data_path, ignore_errors=True)
             stop_and_cleanup(cur_tests_dir, log_path)
+            generate_docker_compose(cur_tests_dir)
             start_docker_compose(cur_tests_dir, log_path)
             wait_for_services(cur_tests_dir, log_path)
             stop_and_cleanup(cur_tests_dir, log_path)

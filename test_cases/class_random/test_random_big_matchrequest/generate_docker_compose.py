@@ -73,9 +73,9 @@ docker_compose_template['services']['test-semantic-matcher'] = {
     ],
     'volumes': [
         './data:/app/data',
-        '../../main:/app/main',
-        '../../util:/app/util',
-        '../../model:/app/model'
+        '../../../main:/app/main',
+        '../../../util:/app/util',
+        '../../../model:/app/model'
     ],
     'depends_on': [f'python-semantic-matcher_{i+1}' for i in range(num_services)]
 }
