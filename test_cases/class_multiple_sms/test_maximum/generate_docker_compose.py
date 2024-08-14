@@ -14,7 +14,7 @@ docker_compose_template = {
 }
 
 # Generate a random number of services (between 1 and 5 for example)
-num_services = random.randint(20, 30)
+num_services = random.randint(40, 40)
 services = []
 
 # Create services dynamically
