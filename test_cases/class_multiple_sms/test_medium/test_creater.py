@@ -14,7 +14,6 @@ class Test(TestModel):
     def create(self):
 
         matches_list = []
-        expected_matches = []
 
         semantic_ids_list = []
         semantic_id_counter = 0

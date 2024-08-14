@@ -11,14 +11,14 @@ import sys
 def start_docker_compose(test_dir, log_file):
     """
     Start the docker-compose file in the test directory. Write all logs into log file.
-    :param test_dir:
-    :param log_file:
-    :return:
+    :param test_dir: Directory where docker-compose file is located
+    :param log_file: Path to the log file where output will be saved
+    :return: None
     """
     try:
         # Open the log file for appending
         with open(log_file, 'a') as f:
-            # Start docker-compose up -d
+            # Start docker-compose up -d (detached mode)
             subprocess.run(['docker-compose', 'up', '-d'], cwd=test_dir, check=True, stdout=f, stderr=subprocess.STDOUT)
 
             # Start streaming logs from all containers
@@ -33,40 +33,30 @@ def start_docker_compose(test_dir, log_file):
             while True:
                 line = process.stdout.readline().strip()
                 if not line:
-                    f.write("Break triggered")
+                    f.write("Break triggered")  # Debugging information
                     f.flush()
                     break
                 f.write(line + '\n')
                 f.flush()
 
+    # Handle errors in case docker-compose fails
     except subprocess.CalledProcessError as e:
         print(f"Failed to start docker-compose: {e}")
     except Exception as e:
         print(f"An error occurred: {e}")
     finally:
-        # Ensure the subprocess is terminated
+        # Ensure the subprocess is terminated properly
         if 'process' in locals():
             process.terminate()
             process.wait()
 
 
-def clone_repos():
-    repos = {
-        "semantic_id_resolver": "https://github.com/dxvidnrt/semantic_id_resolver",
-        "python-semantic-matcher": "https://github.com/dxvidnrt/python-semantic-matcher"
-    }
-    for name, url in repos.items():
-        target_dir = f"../../../{name}"
-        if not os.path.exists(target_dir):
-            subprocess.run(['git', 'clone', url, target_dir], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-
 def stop_and_cleanup(test_dir, log_file):
     """
     Stop and Remove all services
-    :param test_dir:
-    :param log_file:
-    :return:
+    :param test_dir: Directory where docker-compose file is located
+    :param log_file: Path to the log file where output will be saved
+    :return: None
     """
     try:
         with open(log_file, 'a') as f:
@@ -80,9 +70,9 @@ def wait_for_services(test_dir, log_file):
     """
     Run while services are active. Search for container matching pattern 'test-semantic-matcher' and check its status.
     If status is EXITED, stop waiting.
-    :param test_dir:
-    :param log_file:
-    :return:
+    :param test_dir: Directory where docker-compose file is located
+    :param log_file: Path to the log file where output will be saved
+    :return: None
     """
 
     def get_container_exit_code(container_id):
@@ -148,7 +138,6 @@ def wait_for_services(test_dir, log_file):
 
     pattern = 'test-semantic-matcher'
 
-    # Open the log file for writing
     with open(log_file, 'a') as f:
         f.write("Starting log...\n")
         f.flush()
@@ -178,6 +167,7 @@ def wait_for_services(test_dir, log_file):
                 if exit_state == "EXITED":
                     exit_code = get_container_exit_code(container_id)
                     output = f"Container {get_container_name(container_id)} exited with code: {exit_code}"
+                    # Print success or failure based on exit code
                     if int(exit_code) == 0:
                         print("\033[32m\u2714\033[0m", output)
                     else:
@@ -192,38 +182,37 @@ def wait_for_services(test_dir, log_file):
             process.terminate()
             process.wait()
 
-            # Write final status to log
             f.write("Process terminated\n")
             f.flush()
 
 
 def generate_docker_compose(test_dir):
     generate_file_path = os.path.join(test_dir, 'generate_docker_compose.py')
+    # Check if the generation script exists
     if os.path.isfile(generate_file_path):
         result = subprocess.run(
-            [sys.executable, generate_file_path],  # Command to run
+            [sys.executable, generate_file_path],  # Command to run the script
             cwd=test_dir,  # Change working directory
             capture_output=True,  # Capture standard output and error
             text=True  # Output as text instead of bytes
         )
 
-        if result.returncode == 0:
-            print("Script output:\n", result.stdout)
-        else:
+        if result.returncode != 0:
             print("Script error:\n", result.stderr)
 
 
+# Main function to coordinate the execution of tests
 def main():
+    # Set root and log directories
     root_dir = os.path.dirname(os.path.abspath(__file__))
     tests_dir = os.path.join(root_dir, '../test_cases')
     log_dir = os.path.join(root_dir, '../logs')
     if not os.path.exists(log_dir):
-        os.makedirs(log_dir)
+        os.makedirs(log_dir)  # Create log directory if it doesn't exist
     current_datetime = datetime.datetime.now()
     formatted_datetime = current_datetime.strftime("%Y-%m-%d-%H-%M-%S")
     log_datetime_dir = os.path.join(log_dir, formatted_datetime)
     os.makedirs(log_datetime_dir)
-    clone_repos()
 
     def start_testcase(cur_tests_dir, cur_test_dir):
         log_path = os.path.join(log_datetime_dir, f'{cur_test_dir}.log')
@@ -238,8 +227,6 @@ def main():
 
     for test_dir in sorted(os.listdir(tests_dir)):
         cur_location = os.path.join(tests_dir, test_dir)
-
-        # Check if it's a directory
         if os.path.isdir(cur_location):
             # Check if directory name starts with 'test_'
             if test_dir.startswith('test_'):

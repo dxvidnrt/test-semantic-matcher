@@ -1,9 +1,7 @@
-import requests
 from semantic_matcher import service_model, model
-from resolver_modules import service as resolver_service
 
 from model.Test import TestModel
-from util import sms_util, graph_representation, json_util
+from util import json_util
 import random
 
 

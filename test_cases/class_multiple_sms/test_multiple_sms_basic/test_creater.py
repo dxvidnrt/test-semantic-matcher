@@ -25,4 +25,3 @@ class Test(TestModel):
             score_limit=0,
             local_only=False
         )
-

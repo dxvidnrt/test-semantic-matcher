@@ -42,7 +42,8 @@ class CustomDecoder(json.JSONDecoder):
             # Iterate through each item in the decoded JSON data
             for item in decoded_data:
                 # Check if the item has the expected keys for SemanticMatch
-                if 'base_semantic_id' in item and 'match_semantic_id' in item and 'score' in item and 'meta_information' in item:
+                if 'base_semantic_id' in item and 'match_semantic_id' in item and 'score' in item and \
+                        'meta_information' in item:
                     # Create a SemanticMatch instance from the item data
                     match = SemanticMatch(
                         base_semantic_id=item['base_semantic_id'],

@@ -1,7 +1,7 @@
 import json
 from resolver_modules import service as resolver_service
 import requests
-from semantic_matcher import service_model, model
+from semantic_matcher import model
 import os
 from util import json_util
 
@@ -11,8 +11,7 @@ def get_all_sms(config):
     Get all SMS stored in config and save graph as json in data folder.
     """
     for endpoint_name, endpoint_url in config['ENDPOINTS'].items():
-        page = config['SMS']['url_get_all']
-        url = f"{endpoint_url}/{page}"
+        url = f"{endpoint_url}/'all_matches'"
         response = requests.get(url)
         if response.status_code == 200:
             if not endpoint_url.startswith("http://"):
@@ -35,9 +34,8 @@ def clear_all_sms(config):
             response = requests.post(url)
 
 
-def get_matches_sms(match_request, endpoint, path, config, timeout):
-    page = config['SMS']['url_get']
-    url = f'{endpoint}/{page}'
+def get_matches_sms(match_request, endpoint, path, timeout):
+    url = f'{endpoint}/get_matches'
     try:
         response = requests.get(url, json=match_request.dict(), timeout=timeout)
     except requests.exceptions.Timeout:

@@ -1,16 +1,3 @@
-[SERVICE]
-endpoint=http://127.0.0.1
-port=8100
-
-[RESOLVER]
-endpoint=http://semantic_id_resolver
-port=8125
-
-[SMS]
-url_get=get_matches
-url_post=post_matches
-url_get_all=all_matches
-
 [ENDPOINTS]
 s-heppner.com=http://python-semantic-matcher_1:8000
 dxvidnrt.com=http://python-semantic-matcher_2:8000

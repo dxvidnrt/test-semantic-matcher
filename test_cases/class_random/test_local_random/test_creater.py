@@ -6,7 +6,6 @@ import random
 
 class Test(TestModel):
     def create(self):
-        # sms
         number_nodes = random.randint(15, 20)
         number_matches = random.randint(int((1/3) * (number_nodes ** 2)), int((2/3) * (number_nodes ** 2)))
         base_semantic_ids = [f"sms/SemanticId/{i}" for i in range(number_nodes)]
