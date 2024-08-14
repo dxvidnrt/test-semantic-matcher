@@ -46,7 +46,7 @@ class TestModel(ABC):
         """
         Abstract method to create the test scenario.
         """
-        pass
+        raise NotImplementedError("Test cases need to implement this method.")
 
     def run(self):
         sms_util.post_test_case(self.test_json_path, self.config)

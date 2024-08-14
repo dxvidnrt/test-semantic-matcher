@@ -21,5 +21,3 @@ ENV NAME World
 
 # Run start_test.py when the container launches
 CMD ["python", "main/start_test.py", "test_local_matches"]
-
-#Probably not needed when requirements are in test_cases

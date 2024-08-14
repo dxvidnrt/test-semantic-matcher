@@ -22,5 +22,3 @@ ENV NAME World
 # Run start_test.py when the container launches
 
 CMD ["python", "main/start_test.py", "test_dynamic_200_single_sms"]
-
-#Probably not needed when requirements are in test_cases

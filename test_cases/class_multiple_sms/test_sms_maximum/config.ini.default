@@ -1,0 +1,42 @@
+[SERVICE]
+endpoint = http://127.0.0.1
+port = 8100
+
+[RESOLVER]
+endpoint = http://semantic_id_resolver
+port = 8125
+
+[SMS]
+url_get = get_matches
+url_post = post_matches
+url_get_all = all_matches
+
+[ENDPOINTS]
+sms1 = http://python-semantic-matcher_1:8000
+sms2 = http://python-semantic-matcher_2:8000
+sms3 = http://python-semantic-matcher_3:8000
+sms4 = http://python-semantic-matcher_4:8000
+sms5 = http://python-semantic-matcher_5:8000
+sms6 = http://python-semantic-matcher_6:8000
+sms7 = http://python-semantic-matcher_7:8000
+sms8 = http://python-semantic-matcher_8:8000
+sms9 = http://python-semantic-matcher_9:8000
+sms10 = http://python-semantic-matcher_10:8000
+sms11 = http://python-semantic-matcher_11:8000
+sms12 = http://python-semantic-matcher_12:8000
+sms13 = http://python-semantic-matcher_13:8000
+sms14 = http://python-semantic-matcher_14:8000
+sms15 = http://python-semantic-matcher_15:8000
+sms16 = http://python-semantic-matcher_16:8000
+sms17 = http://python-semantic-matcher_17:8000
+sms18 = http://python-semantic-matcher_18:8000
+sms19 = http://python-semantic-matcher_19:8000
+sms20 = http://python-semantic-matcher_20:8000
+sms21 = http://python-semantic-matcher_21:8000
+sms22 = http://python-semantic-matcher_22:8000
+sms23 = http://python-semantic-matcher_23:8000
+sms24 = http://python-semantic-matcher_24:8000
+sms25 = http://python-semantic-matcher_25:8000
+sms26 = http://python-semantic-matcher_26:8000
+sms27 = http://python-semantic-matcher_27:8000
+
