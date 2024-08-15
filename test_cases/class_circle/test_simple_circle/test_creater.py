@@ -1,7 +1,6 @@
 from semantic_matcher import service_model, model
-import json
 from model.Test import TestModel
-from util import sms_util, graph_representation, json_util
+from util import json_util
 
 
 class Test(TestModel):
