@@ -2,36 +2,41 @@ from semantic_matcher import service_model, model
 
 from model.Test import TestModel
 from util import json_util, graph_util
+import random
 
 
 class Test(TestModel):
 
+    def __init__(self, name):
+        super().__init__(name)
+        self.start_server_name = None
 
     def create(self):
         match_1 = model.SemanticMatch(
             base_semantic_id='sms1/semanticID/1',
-            match_semantic_id='sms2/semanticID/2',
-            score=0.7,
+            match_semantic_id='sms1/semanticID/2',
+            score=random.uniform(0.0, 1.0),
             meta_information={'matchSource': '1'}
         )
         match_2 = model.SemanticMatch(
             base_semantic_id='sms1/semanticID/1',
-            match_semantic_id='sms3/semanticID/1',
+            match_semantic_id='sms1/semanticID/1.1',
             score=1,
             meta_information={'matchSource': '1'}
         )
         match_3 = model.SemanticMatch(
-            base_semantic_id='sms3/semanticID/1',
-            match_semantic_id='sms2/semanticID/2',
-            score=0.8,
+            base_semantic_id='sms1/semanticID/1.1',
+            match_semantic_id='sms1/semanticID/2',
+            score=random.uniform(0.0, 1.0),
             meta_information={'matchSource': '1'}
         )
         match_4 = model.SemanticMatch(
-            base_semantic_id='sms2/semanticID/2',
-            match_semantic_id='sms4/semanticID/3',
-            score=0.5,
+            base_semantic_id='sms1/semanticID/2',
+            match_semantic_id='sms1/semanticID/3',
+            score=random.uniform(0.0, 1.0),
             meta_information={'matchSource': '1'}
         )
+
         matches = [match_1, match_2, match_4, match_3]
         expected_matches = graph_util.find_reachable_matches('sms1/semanticID/1', matches, 0.0)
         json_util.save_as_json(self.test_json_path, matches)

@@ -47,7 +47,7 @@ def show_graph(directory, image_path):
     nx.set_node_attributes(G, groups, "group")
 
     # Assign a color to each group
-    unique_groups = list(set(groups.values()))
+    unique_groups = sorted(list(set(groups.values())))
     # Use tab10 for the first 10 distinct colors
     distinct_colors = plt.cm.get_cmap('tab10', 10)  # This gives 10 distinct colors
 
@@ -73,7 +73,7 @@ def show_graph(directory, image_path):
     edge_labels = {}
     for u, v, key, data in G.edges(data=True, keys=True):
         if (u, v) in edge_labels:
-            edge_labels[(u, v)].append(f"{key}: {data['score']}")
+            edge_labels[(u, v)].append(str(data['score']))
         else:
             edge_labels[(u, v)] = [str(data['score'])]
 
