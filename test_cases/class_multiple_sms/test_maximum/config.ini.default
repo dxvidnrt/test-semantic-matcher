@@ -1,3 +1,7 @@
+[RESOLVER]
+endpoint = http://semantic_id_resolver
+port = 8125
+
 [ENDPOINTS]
 sms1 = http://python-semantic-matcher_1:8000
 sms2 = http://python-semantic-matcher_2:8000
@@ -26,4 +30,17 @@ sms24 = http://python-semantic-matcher_24:8000
 sms25 = http://python-semantic-matcher_25:8000
 sms26 = http://python-semantic-matcher_26:8000
 sms27 = http://python-semantic-matcher_27:8000
+sms28 = http://python-semantic-matcher_28:8000
+sms29 = http://python-semantic-matcher_29:8000
+sms30 = http://python-semantic-matcher_30:8000
+sms31 = http://python-semantic-matcher_31:8000
+sms32 = http://python-semantic-matcher_32:8000
+sms33 = http://python-semantic-matcher_33:8000
+sms34 = http://python-semantic-matcher_34:8000
+sms35 = http://python-semantic-matcher_35:8000
+sms36 = http://python-semantic-matcher_36:8000
+sms37 = http://python-semantic-matcher_37:8000
+sms38 = http://python-semantic-matcher_38:8000
+sms39 = http://python-semantic-matcher_39:8000
+sms40 = http://python-semantic-matcher_40:8000
 

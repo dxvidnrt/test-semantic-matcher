@@ -18,15 +18,15 @@ def find_reachable_matches(start_semantic_id: str, matches: List[model.SemanticM
     # To store the result
     reachable_matches = []
 
-    def dfs(current_node: str, current_score: float, path: List[model.SemanticMatch]):
+    def dfs(current_node: str, current_score: float, path: List[str]):
         # Check each neighbor of the current node
-        if current_node in graph:
+        if current_node in graph and current_node not in path:
+            new_path = path + [current_node]
             for neighbor in graph[current_node]:
                 new_score = current_score * neighbor.score
                 # Check if the new score is above the cut-off limit
                 if new_score > cut_off_score:
                     # Add the neighbor to the path and the results
-                    new_path = path + [neighbor]
                     reachable_matches.append(neighbor)
                     # Recursively call dfs for the neighbor
                     dfs(neighbor.match_semantic_id, new_score, new_path)

@@ -20,7 +20,6 @@ class Test(TestModel):
         while semantic_id_counter <= random.randint(8, 12):
             for sms in self.sms:
                 number_semantic_ids = random.randint(0, 6)
-                print(f"number semantic ids {number_semantic_ids}")
                 for _ in range(number_semantic_ids):
                     semantic_id_counter += 1
                     semantic_id = f'{sms}/semanticID/{semantic_id_counter}'

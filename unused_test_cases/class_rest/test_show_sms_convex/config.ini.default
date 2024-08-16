@@ -1,3 +1,7 @@
+[RESOLVER]
+endpoint=http://semantic_id_resolver
+port=8125
+
 [ENDPOINTS]
 uml1.com=http://python-semantic-matcher_1:8000
 uml2.com=http://python-semantic-matcher_1:8000
