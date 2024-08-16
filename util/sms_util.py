@@ -11,7 +11,7 @@ def get_all_sms(config):
     Get all SMS stored in config and save graph as json in data folder.
     """
     for endpoint_name, endpoint_url in config['ENDPOINTS'].items():
-        url = f"{endpoint_url}/'all_matches'"
+        url = f"{endpoint_url}/all_matches"
         response = requests.get(url)
         if response.status_code == 200:
             if not endpoint_url.startswith("http://"):
