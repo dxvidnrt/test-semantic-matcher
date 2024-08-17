@@ -7,17 +7,13 @@ import random
 
 class Test(TestModel):
 
-    def __init__(self, name):
-        super().__init__(name)
-        self.start_server_name = None
-
     def create(self):
         number_semantic_ids = random.randint(190, 210)
 
         matches_list = []
         minimal_matches = []
         last_match_semantic_id = f'{self.get_random_sms()}/semanticID/0'
-        self.start_server_name = last_match_semantic_id
+        start_server_name = last_match_semantic_id
         for i in range(number_semantic_ids):
             match_semantic_id = f'{self.get_random_sms()}/semanticID/{i+1}'
             match_i = model.SemanticMatch(
