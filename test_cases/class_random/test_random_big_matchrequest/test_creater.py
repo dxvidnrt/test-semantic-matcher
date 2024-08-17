@@ -6,10 +6,6 @@ import random
 
 class Test(TestModel):
 
-    def __init__(self, name):
-        super().__init__(name)
-        self.start_server_name = None
-
     def create(self):
         number_nodes = random.randint(15, 20)
         number_matches = random.randint(int((1 / 6) * (number_nodes ** 2)), int((1 / 3) * (number_nodes ** 2)))
@@ -27,8 +23,8 @@ class Test(TestModel):
         minimal_matches = []
 
         length_path = random.randint(5, number_nodes)
-        self.start_server_name = random.choice(base_semantic_ids)
-        last_match_id = self.start_server_name
+        start_server_name = random.choice(base_semantic_ids)
+        last_match_id = start_server_name
         cur_score = 1
         cut_off_score = random.uniform(0.01, 0.2)
         for i in range(length_path):
@@ -50,7 +46,7 @@ class Test(TestModel):
         json_util.save_as_json(self.expected_minimal_matches_path, minimal_matches)
 
         self.match_request = service_model.MatchRequest(
-            semantic_id=self.start_server_name,
+            semantic_id=start_server_name,
             score_limit=cut_off_score,
             local_only=False
         )
