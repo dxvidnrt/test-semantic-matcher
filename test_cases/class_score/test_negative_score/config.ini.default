@@ -3,5 +3,5 @@ endpoint=http://semantic_id_resolver
 port=8125
 
 [ENDPOINTS]
-s-heppner.com=http://python-semantic-matcher_1:8000
-dxvidnrt.com=http://python-semantic-matcher_2:8000
+sms1=http://python-semantic-matcher_1:8000
+sms2=http://python-semantic-matcher_2:8000

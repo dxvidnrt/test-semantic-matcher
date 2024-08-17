@@ -20,4 +20,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 ENV NAME World
 
 # Run start_test.py when the container launches
-CMD ["python", "main/start_test.py", "test_negative_score"]
+CMD ["python", "main/start_test.py", "test_multiple_edges_single_sms"]

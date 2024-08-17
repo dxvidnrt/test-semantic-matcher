@@ -15,40 +15,13 @@ services:
     - semantic_network
     ports:
     - 8000:8010
-  python-semantic-matcher_2:
-    image: local/python-semantic-matcher
-    build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
-    healthcheck:
-      interval: 10s
-      retries: 5
-      test: CMD curl -f http://python-semantic-matcher_2:8000
-      timeout: 5s
-    networks:
-    - semantic_network
-    ports:
-    - 8001:8011
-  python-semantic-matcher_3:
-    image: local/python-semantic-matcher
-    build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
-    healthcheck:
-      interval: 10s
-      retries: 5
-      test: CMD curl -f http://python-semantic-matcher_3:8000
-      timeout: 5s
-    networks:
-    - semantic_network
-    ports:
-    - 8002:8012
+
   semantic_id_resolver:
     image: local/semantic_id_resolver
     build:
       context: https://github.com/dxvidnrt/semantic_id_resolver.git
     depends_on:
     - python-semantic-matcher_1
-    - python-semantic-matcher_2
-    - python-semantic-matcher_3
     networks:
     - semantic_network
     ports:
@@ -58,8 +31,6 @@ services:
       context: .
     depends_on:
     - python-semantic-matcher_1
-    - python-semantic-matcher_2
-    - python-semantic-matcher_3
     networks:
     - semantic_network
     ports:

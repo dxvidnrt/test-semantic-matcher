@@ -1,12 +1,6 @@
 # Use an official Python runtime as a parent image
 FROM python:3.8-slim
 
-# Install system dependencies
-RUN apt-get update && \
-    apt-get install -y \
-    curl \
-    && rm -rf
-
 # Install Git
 RUN apt-get update && apt-get install -y git
 
@@ -22,5 +16,8 @@ COPY . /app
 # Install any needed dependencies specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Define environment variable
+ENV NAME World
+
 # Run start_test.py when the container launches
-CMD ["python", "main/start_test.py", "test_1"]
+CMD ["python", "main/start_test.py", "test_circle_multiple_sms_score_less_1"]
