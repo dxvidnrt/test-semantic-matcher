@@ -1,5 +1,8 @@
+[RESOLVER]
+endpoint = http://semantic_id_resolver
+port = 8125
+
 [ENDPOINTS]
 sms1 = http://python-semantic-matcher_1:8000
 sms2 = http://python-semantic-matcher_2:8000
-sms3 = http://python-semantic-matcher_3:8000
 
