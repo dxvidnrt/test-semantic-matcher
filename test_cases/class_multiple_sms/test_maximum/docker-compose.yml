@@ -4,7 +4,7 @@ networks:
 services:
   python-semantic-matcher_1:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -17,7 +17,7 @@ services:
     - 8000:8010
   python-semantic-matcher_10:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -30,7 +30,7 @@ services:
     - 8009:8019
   python-semantic-matcher_11:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -43,7 +43,7 @@ services:
     - 8010:8020
   python-semantic-matcher_12:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -56,7 +56,7 @@ services:
     - 8011:8021
   python-semantic-matcher_13:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -69,7 +69,7 @@ services:
     - 8012:8022
   python-semantic-matcher_14:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -82,7 +82,7 @@ services:
     - 8013:8023
   python-semantic-matcher_15:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -95,7 +95,7 @@ services:
     - 8014:8024
   python-semantic-matcher_16:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -108,7 +108,7 @@ services:
     - 8015:8025
   python-semantic-matcher_17:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -121,7 +121,7 @@ services:
     - 8016:8026
   python-semantic-matcher_18:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -134,7 +134,7 @@ services:
     - 8017:8027
   python-semantic-matcher_19:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -147,7 +147,7 @@ services:
     - 8018:8028
   python-semantic-matcher_2:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -160,7 +160,7 @@ services:
     - 8001:8011
   python-semantic-matcher_20:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -173,7 +173,7 @@ services:
     - 8019:8029
   python-semantic-matcher_21:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -186,7 +186,7 @@ services:
     - 8020:8030
   python-semantic-matcher_22:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -199,7 +199,7 @@ services:
     - 8021:8031
   python-semantic-matcher_23:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -212,7 +212,7 @@ services:
     - 8022:8032
   python-semantic-matcher_24:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -225,7 +225,7 @@ services:
     - 8023:8033
   python-semantic-matcher_25:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -238,7 +238,7 @@ services:
     - 8024:8034
   python-semantic-matcher_26:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -251,7 +251,7 @@ services:
     - 8025:8035
   python-semantic-matcher_27:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -264,7 +264,7 @@ services:
     - 8026:8036
   python-semantic-matcher_28:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -277,7 +277,7 @@ services:
     - 8027:8037
   python-semantic-matcher_29:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -290,7 +290,7 @@ services:
     - 8028:8038
   python-semantic-matcher_3:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -303,7 +303,7 @@ services:
     - 8002:8012
   python-semantic-matcher_30:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -316,7 +316,7 @@ services:
     - 8029:8039
   python-semantic-matcher_31:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -329,7 +329,7 @@ services:
     - 8030:8040
   python-semantic-matcher_32:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -342,7 +342,7 @@ services:
     - 8031:8041
   python-semantic-matcher_33:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -355,7 +355,7 @@ services:
     - 8032:8042
   python-semantic-matcher_34:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -368,7 +368,7 @@ services:
     - 8033:8043
   python-semantic-matcher_35:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -381,7 +381,7 @@ services:
     - 8034:8044
   python-semantic-matcher_36:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -394,7 +394,7 @@ services:
     - 8035:8045
   python-semantic-matcher_37:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -407,7 +407,7 @@ services:
     - 8036:8046
   python-semantic-matcher_38:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -420,7 +420,7 @@ services:
     - 8037:8047
   python-semantic-matcher_39:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -433,7 +433,7 @@ services:
     - 8038:8048
   python-semantic-matcher_4:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -446,7 +446,7 @@ services:
     - 8003:8013
   python-semantic-matcher_40:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -459,7 +459,7 @@ services:
     - 8039:8049
   python-semantic-matcher_5:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -472,7 +472,7 @@ services:
     - 8004:8014
   python-semantic-matcher_6:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -485,7 +485,7 @@ services:
     - 8005:8015
   python-semantic-matcher_7:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -498,7 +498,7 @@ services:
     - 8006:8016
   python-semantic-matcher_8:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -511,7 +511,7 @@ services:
     - 8007:8017
   python-semantic-matcher_9:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -524,7 +524,7 @@ services:
     - 8008:8018
   semantic_id_resolver:
     build:
-      context: https://github.com/dxvidnrt/semantic_id_resolver.git
+      context: https://github.com/s-heppner/semantic_id_resolver.git
     depends_on:
     - python-semantic-matcher_1
     - python-semantic-matcher_2

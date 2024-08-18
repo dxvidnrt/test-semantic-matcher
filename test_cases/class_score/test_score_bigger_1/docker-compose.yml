@@ -4,7 +4,7 @@ services:
   semantic_id_resolver:
     image: local/semantic_id_resolver
     build:
-      context: https://github.com/dxvidnrt/semantic_id_resolver.git
+      context: https://github.com/s-heppner/semantic_id_resolver.git
     ports:
       - "8125:8015"
     networks:
@@ -16,7 +16,7 @@ services:
   python-semantic-matcher_1:
     image: local/python-semantic-matcher
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     ports:
       - "8000:8010"
     networks:
@@ -30,7 +30,7 @@ services:
   python-semantic-matcher_2:
     image: local/python-semantic-matcher
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     ports:
       - "8001:8011"
     networks:

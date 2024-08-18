@@ -5,7 +5,7 @@ services:
   python-semantic-matcher_1:
     image: local/python-semantic-matcher
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -18,7 +18,7 @@ services:
   python-semantic-matcher_2:
     image: local/python-semantic-matcher
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -31,7 +31,7 @@ services:
   python-semantic-matcher_3:
     image: local/python-semantic-matcher
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -43,7 +43,7 @@ services:
     - 8002:8012
   python-semantic-matcher_4:
     build:
-      context: https://github.com/dxvidnrt/python-semantic-matcher.git
+      context: https://github.com/s-heppner/python-semantic-matcher.git
     healthcheck:
       interval: 10s
       retries: 5
@@ -56,7 +56,7 @@ services:
   semantic_id_resolver:
     image: local/semantic_id_resolver
     build:
-      context: https://github.com/dxvidnrt/semantic_id_resolver.git
+      context: https://github.com/s-heppner/semantic_id_resolver.git
     depends_on:
     - python-semantic-matcher_1
     - python-semantic-matcher_2
