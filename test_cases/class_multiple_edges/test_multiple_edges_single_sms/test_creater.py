@@ -7,10 +7,6 @@ import random
 
 class Test(TestModel):
 
-    def __init__(self, name):
-        super().__init__(name)
-        self.start_server_name = None
-
     def create(self):
         match_1 = model.SemanticMatch(
             base_semantic_id='sms1/semanticID/1',
