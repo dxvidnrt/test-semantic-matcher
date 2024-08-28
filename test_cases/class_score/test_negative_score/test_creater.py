@@ -13,7 +13,7 @@ class Test(TestModel):
         )
         match_2 = model.SemanticMatch(
             base_semantic_id='sms2/semanticID/2',
-            match_semantic_id='sms2/semanticID/2.2',
+            match_semantic_id='sms2/semanticID/4',
             score=0.9,
             meta_information={'matchSource': 'Defined by David Niebert'}
         )
