@@ -31,14 +31,9 @@ Before you begin, ensure you have the following installed:
 1. **Clone the repository**:
    ```bash
    git clone https://github.com/dxvidnrt/test-semantic-matcher.git
-   cd semantic-matching-test-environment
+   cd test-semantic-matcher
    ```
-
-2. **Install the required Python packages**:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
+   
 ### Running the Environment
 
 To start the entire test environment, simply run:
