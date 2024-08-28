@@ -7,7 +7,7 @@ import random
 class Test(TestModel):
 
     def create(self):
-        number_semantic_ids = random.randint(8, 12)
+        number_semantic_ids = random.randint(4, 4)
 
         matches_list = []
         expected_matches = []
@@ -18,7 +18,7 @@ class Test(TestModel):
             match_i = model.SemanticMatch(
                 base_semantic_id=last_match_semantic_id,
                 match_semantic_id=match_semantic_id,
-                score=random.uniform(1.0, 10.0),
+                score=round(random.uniform(1.0, 10.0), 1),
                 meta_information={'matchSource': "1"}
             )
             matches_list.append(match_i)

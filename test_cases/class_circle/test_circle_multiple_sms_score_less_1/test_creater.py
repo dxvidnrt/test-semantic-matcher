@@ -9,19 +9,19 @@ class Test(TestModel):
         match_sms_1 = model.SemanticMatch(
             base_semantic_id='sms1/semanticID/1',
             match_semantic_id='sms2/semanticID/2',
-            score=random.uniform(0.5, 0.99),
+            score=round(random.uniform(0.5, 0.99), 1),
             meta_information={'matchSource': '1'}
         )
         match_sms_2 = model.SemanticMatch(
             base_semantic_id='sms2/semanticID/2',
             match_semantic_id='sms3/semanticID/3',
-            score=random.uniform(0.5, 0.99),
+            score=round(random.uniform(0.5, 0.99), 1),
             meta_information={'matchSource': '1'}
         )
         match_sms_3 = model.SemanticMatch(
             base_semantic_id='sms3/semanticID/3',
             match_semantic_id='sms1/semanticID/1',
-            score=random.uniform(0.5, 0.9),
+            score=round(random.uniform(0.5, 0.99), 1),
             meta_information={'matchSource': '1'}
         )
         matches_list = [match_sms_1, match_sms_2, match_sms_3]
