@@ -48,28 +48,26 @@ def show_graph(directory, image_path):
 
     # Assign a color to each group
     unique_groups = sorted(list(set(groups.values())))
-    # Use tab10 for the first 10 distinct colors
-    distinct_colors = plt.cm.get_cmap('tab10', 10)  # This gives 10 distinct colors
 
-    # Cycle through additional colors if more are needed
-    additional_colors = plt.cm.get_cmap('tab20', 20)  # This gives an additional set of colors
+    # Use tab20c for distinct colors
+    distinct_colors = plt.cm.get_cmap('tab20c')  # Create a colormap with specific number of colors
 
-    # Combine the two sets
-    all_colors = [distinct_colors(i) for i in range(10)] + [additional_colors(i) for i in range(10, 20)]
-
-    # Create the color map
-    color_map = {group: all_colors[i % len(all_colors)] for i, group in enumerate(unique_groups)}
+    # Create the color map for each group
+    color_map = {group: distinct_colors(i / 20) for i, group in enumerate(unique_groups)}
 
     # Apply the color map to nodes
     node_colors = [color_map[groups[node]] for node in G.nodes()]
 
     # Draw the graph
     pos = nx.spring_layout(G, seed=42)
-    nx.draw_networkx_nodes(G, pos, node_size=200, node_color=node_colors)
-    nx.draw_networkx_edges(G, pos, width=1.0, alpha=0.8, edge_color="black")
-    nx.draw_networkx_labels(G, pos, labels=node_labels, font_size=12)
+    nx.draw_networkx_nodes(G, pos, node_size=500, node_color=node_colors)
+    nx.draw_networkx_edges(G, pos, width=2.0, alpha=0.8, edge_color="black")
 
-    # Draw edge labels for MultiDiGraph
+    # Draw labels manually to ensure centering
+    for node, (x, y) in pos.items():
+        plt.text(x, y, node_labels[node], fontsize=12, ha='center', va='center')
+
+    # Draw edge labels manually above the edges
     edge_labels = {}
     for u, v, key, data in G.edges(data=True, keys=True):
         if (u, v) in edge_labels:
@@ -78,7 +76,18 @@ def show_graph(directory, image_path):
             edge_labels[(u, v)] = [str(data['score'])]
 
     edge_labels = {key: '\n'.join(value) for key, value in edge_labels.items()}
-    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=6)
+
+    # Calculate positions for edge labels above the edges
+    for (u, v), label in edge_labels.items():
+        x0, y0 = pos[u]
+        x1, y1 = pos[v]
+        midpoint = ((x0 + x1) / 2, (y0 + y1) / 2)
+        direction = np.array([x1 - x0, y1 - y0])
+        normal = np.array([-direction[1], direction[0]])
+        normal = normal / np.linalg.norm(
+            normal) * 0.1  # Adjust this value to control the distance of labels above edges
+        plt.text(midpoint[0] + normal[0], midpoint[1] + normal[1], label,
+                 fontsize=10, ha='center', va='center', bbox=dict(facecolor='none', edgecolor='none'))
 
     # Get the matchSource for each edge and use it to group nodes
     match_sources = {}
@@ -160,7 +169,7 @@ def show_graph(directory, image_path):
         match_source_legend = plt.legend(handles, labels, title="Match Source", loc="best")
         plt.gca().add_artist(match_source_legend)
 
-    plt.title("Semantic ID Graph", loc="left")
+    plt.title("Semantic Matches of SMS", loc="center")
     plt.axis("off")
 
     plt.savefig(f'{image_path}/graph.png')
